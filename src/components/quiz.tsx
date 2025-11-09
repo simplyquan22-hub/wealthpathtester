@@ -8,11 +8,12 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy, AlertTriangle, LineChart } from 'lucide-react';
+import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy, AlertTriangle, LineChart, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Celebration from './celebration';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
+import { explainAnswer, type ExplainAnswerInput } from '@/ai/flows/explain-answer-flow';
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -26,11 +27,84 @@ const sections = quizData.reduce((acc, question) => {
 
 const sectionNames = Object.keys(sections);
 
+// Explanation Component
+const Explanation = ({ question, userAnswer }: { question: Question; userAnswer: string | null }) => {
+  const [explanation, setExplanation] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const getExplanation = async () => {
+    if (!userAnswer) return;
+    setIsLoading(true);
+    setError(null);
+    setExplanation('');
+
+    const input: ExplainAnswerInput = {
+      question: question.question,
+      options: question.options,
+      userAnswer: userAnswer,
+      correctAnswer: question.correctAnswer,
+      originalExplanation: question.explanation,
+    };
+
+    try {
+      const result = await explainAnswer(input);
+      setExplanation(result.explanation);
+    } catch (err) {
+      console.error("Error getting AI explanation", err);
+      setError('Sorry, I couldn\'t generate a new explanation right now. Please check the original one.');
+      setExplanation(question.explanation); // Fallback to original
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <p className={cn("p-3 rounded-md", userAnswer === question.correctAnswer ? "bg-green-500/20" : "bg-red-500/20")}>
+        Your answer: {userAnswer || 'Not Answered'}
+      </p>
+      {userAnswer !== question.correctAnswer && (
+        <p className="p-3 rounded-md bg-green-500/20">
+          Correct answer: {question.correctAnswer}
+        </p>
+      )}
+      <div className="p-4 bg-card rounded-md border">
+        <div className="flex items-start gap-4">
+          <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+          <div className="flex-1">
+            <p className="font-semibold mb-2">Explanation</p>
+            {isLoading ? (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Generating a better explanation...</span>
+              </div>
+            ) : error ? (
+              <p className="text-destructive text-sm">{error}</p>
+            ) : (
+              <p className="text-muted-foreground">{explanation || question.explanation}</p>
+            )}
+          </div>
+        </div>
+        {!explanation && !isLoading && (
+          <Button
+            variant="link"
+            size="sm"
+            onClick={getExplanation}
+            className="p-0 h-auto mt-2"
+          >
+            Explain this differently
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [isFinished, setIsFinished] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
   const [showFeedback, setShowFeedback] = useState(false);
   
   const currentQuestion = useMemo(() => quizData[currentQuestionIndex], [currentQuestionIndex]);
@@ -44,13 +118,7 @@ export function Quiz() {
   const handleSubmit = () => {
     if (!selectedAnswer) return;
     setShowFeedback(true);
-  
-    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
-  
-    if (isCorrect) {
-      setScore(prev => prev + 1);
-    }
-  
+    
     setTimeout(() => {
       setShowFeedback(false);
   
@@ -62,12 +130,16 @@ export function Quiz() {
     }, 1200); // Wait for feedback animation
   };
 
+  // Calculate score once at the end
+  const finalScore = useMemo(() => {
+    if (!isFinished) return 0;
+    return quizData.reduce((acc, question, index) => {
+      return selectedAnswers[index] === question.correctAnswer ? acc + 1 : acc;
+    }, 0);
+  }, [isFinished, selectedAnswers]);
+
   useEffect(() => {
     if (isFinished) {
-      const finalScore = quizData.reduce((acc, question, index) => {
-        return selectedAnswers[index] === question.correctAnswer ? acc + 1 : acc;
-      }, 0);
-      
       const newHistoryEntry = {
         score: finalScore,
         totalQuestions: quizData.length,
@@ -84,17 +156,16 @@ export function Quiz() {
         console.error("Failed to save quiz history to localStorage", error);
       }
     }
-  }, [isFinished, selectedAnswers]);
+  }, [isFinished, finalScore]);
 
   const handleReset = () => {
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
     setIsFinished(false);
-    setScore(0);
     setShowFeedback(false);
   };
   
-  const scorePercentage = (score / quizData.length) * 100;
+  const scorePercentage = (finalScore / quizData.length) * 100;
   const quizProgress = ((isFinished ? quizData.length : currentQuestionIndex) / quizData.length) * 100;
   const isCurrentAnswerCorrect = showFeedback && selectedAnswer === currentQuestion.correctAnswer;
 
@@ -129,20 +200,20 @@ export function Quiz() {
           {isGoodScore && <Celebration />}
           <CardHeader className="text-center p-8 bg-card/80 backdrop-blur-sm z-10 relative">
             {isGoodScore ? (
-              <Trophy className="mx-auto h-16 w-16 text-primary animate-in zoom-in-50" />
+              <Trophy className="mx-auto h-16 w-16 text-yellow-400 animate-in zoom-in-50" />
             ) : (
               <RotateCw className="mx-auto h-16 w-16 text-muted-foreground animate-in zoom-in-50" />
             )}
             <CardTitle className="text-3xl font-bold mt-4">{isGoodScore ? "Excellent Work!" : "Keep Learning!"}</CardTitle>
-            <CardDescription className="text-lg">You scored {score} out of {quizData.length}</CardDescription>
-            <div className="relative pt-4">
-              <Progress value={scorePercentage} className={cn("h-4", isGoodScore ? "bg-primary/30" : "bg-destructive/30")} />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-primary-foreground text-sm">{Math.round(scorePercentage)}%</div>
+            <CardDescription className="text-lg">You scored {finalScore} out of {quizData.length}</CardDescription>
+            <div className="relative pt-4 max-w-sm mx-auto">
+              <Progress value={scorePercentage} className={cn("h-4", isGoodScore ? "" : "bg-destructive/30")} />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-sm mix-blend-difference text-white">{Math.round(scorePercentage)}%</div>
             </div>
-             <p className="text-muted-foreground mt-4">
+             <p className="text-muted-foreground mt-4 text-base max-w-xl mx-auto">
               {isGoodScore 
-                ? "You have a strong understanding of these financial concepts. Apply your knowledge and build your wealth!"
-                : "Building financial literacy is a journey. Review your answers and try again!"
+                ? "You have a strong understanding of these financial concepts. Keep building on this knowledge!"
+                : "Building financial literacy is a journey. Review your answers below and try again!"
               }
             </p>
           </CardHeader>
@@ -152,38 +223,33 @@ export function Quiz() {
                 <AlertTriangle className="h-4 w-4 !text-yellow-500" />
                 <AlertTitle className="font-semibold !text-yellow-400">Focus Area</AlertTitle>
                 <AlertDescription>
-                  You seem to be struggling with **{weakestSection}**. We recommend reviewing this topic in the course PDF to strengthen your understanding.
+                  You seem to be struggling with the **{weakestSection}** section. We recommend reviewing this topic to strengthen your understanding.
                 </AlertDescription>
               </Alert>
             )}
             <h3 className="text-xl font-semibold mb-4 text-center">Review Your Answers</h3>
             <Accordion type="multiple" className="w-full">
               {sectionNames.map(sectionName => (
-                <AccordionItem value={sectionName} key={sectionName} className="bg-muted/50 rounded-lg mb-2">
-                  <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4">
+                <AccordionItem value={sectionName} key={sectionName} className="bg-muted/30 rounded-lg mb-2 border-b-0">
+                  <AccordionTrigger className="text-lg font-semibold hover:no-underline px-4 py-3">
                     {sectionName}
                   </AccordionTrigger>
-                  <AccordionContent className="p-2">
-                    <Accordion type="single" collapsible className="w-full">
+                  <AccordionContent className="px-2 pb-2">
+                    <Accordion type="single" collapsible className="w-full space-y-1">
                       {sections[sectionName].map((question) => {
                          const questionGlobalIndex = quizData.findIndex(q => q.id === question.id);
                          const userAnswer = selectedAnswers[questionGlobalIndex];
                          const isCorrect = userAnswer === question.correctAnswer;
                         return (
                           <AccordionItem value={`item-${question.id}`} key={question.id} className="border-b-0">
-                            <AccordionTrigger className="text-left hover:no-underline text-base">
+                            <AccordionTrigger className="text-left hover:no-underline text-base rounded-md p-3 hover:bg-muted/50 data-[state=open]:bg-card">
                               <div className="flex items-center gap-4 w-full">
                                 {isCorrect ? <CheckCircle2 className="text-green-500 h-5 w-5 flex-shrink-0" /> : <XCircle className="text-red-500 h-5 w-5 flex-shrink-0" />}
                                 <span className="flex-1">{question.question}</span>
                               </div>
                             </AccordionTrigger>
-                            <AccordionContent className="space-y-4">
-                              <p className={cn("p-3 rounded-md", isCorrect ? "bg-green-500/20" : "bg-red-500/20")}>Your answer: {userAnswer || 'Not Answered'}</p>
-                              {!isCorrect && <p className="p-3 rounded-md bg-green-500/20">Correct answer: {question.correctAnswer}</p>}
-                              <div className="flex items-start gap-3 p-3 bg-card rounded-md">
-                                <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
-                                <p className="text-muted-foreground">{question.explanation}</p>
-                              </div>
+                            <AccordionContent className="p-4 bg-card rounded-b-md">
+                              <Explanation question={question} userAnswer={userAnswer} />
                             </AccordionContent>
                           </AccordionItem>
                         );
@@ -211,15 +277,15 @@ export function Quiz() {
   return (
     <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden">
       {isCurrentAnswerCorrect && <Celebration />}
-      <CardHeader className="p-6">
+      <CardHeader className="p-6 border-b">
         <Progress value={quizProgress} className="mb-4 h-2"/>
         <CardDescription className="font-semibold text-primary">
-          {currentQuestion.section}
+          Question {currentQuestionIndex + 1} of {quizData.length} &bull; {currentQuestion.section}
         </CardDescription>
          <CardTitle className="text-2xl mt-1 leading-tight">{currentQuestion.question}</CardTitle>
       </CardHeader>
      
-      <CardContent className="pt-0">
+      <CardContent className="p-6">
         <RadioGroup
           value={selectedAnswer}
           onValueChange={handleAnswerSelect}
@@ -236,25 +302,26 @@ export function Quiz() {
                   htmlFor={id}
                   className={cn(
                     "flex items-center p-4 rounded-lg border-2 transition-all cursor-pointer bg-muted/30 hover:bg-muted/70",
+                    "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-70",
                     isSelected && "border-primary bg-primary/10",
                     showFeedback && isSelected && !isCorrect && "bg-red-500/20 border-red-500/50 text-foreground animate-in shake",
-                    showFeedback && isCorrect && "bg-green-500/20 border-green-500/50 text-foreground animate-in pulse",
+                    showFeedback && isCorrect && "bg-green-500/20 border-green-500/50 text-foreground",
                   )}
                 >
                   <RadioGroupItem
                     value={option}
                     id={id}
-                    className="mr-4"
+                    className="mr-4 size-5"
+                    disabled={showFeedback}
                   />
-                  <span className="flex-1">{option}</span>
+                  <span className="flex-1 font-medium">{option}</span>
                 </Label>
             );
           })}
         </RadioGroup>
       </CardContent>
-      <CardFooter className="justify-between items-center p-6">
-        <p className="text-sm text-muted-foreground">Question {currentQuestionIndex + 1} of {quizData.length}</p>
-        <Button onClick={handleSubmit} disabled={!selectedAnswer || showFeedback} size="lg">
+      <CardFooter className="justify-end items-center p-6 border-t bg-muted/30">
+        <Button onClick={handleSubmit} disabled={!selectedAnswer || showFeedback} size="lg" className="w-full sm:w-auto">
           {showFeedback ? (isCurrentAnswerCorrect ? 'Correct!' : 'Incorrect') : (currentQuestionIndex === quizData.length - 1 ? 'Finish Quiz' : 'Next Question')}
         </Button>
       </CardFooter>

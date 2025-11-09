@@ -1,7 +1,11 @@
 
 "use client";
 
+<<<<<<< HEAD
 import { useState, useMemo, useEffect } from 'react';
+=======
+import { useState, useMemo } from 'react';
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
 import { quizData } from '@/lib/quiz-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,10 +13,18 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+<<<<<<< HEAD
 import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Celebration from './celebration';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+=======
+import { CheckCircle2, XCircle, Lightbulb, RotateCw } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import Celebration from './celebration';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Trophy } from 'lucide-react';
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -26,6 +38,7 @@ const sections = quizData.reduce((acc, question) => {
 
 const sectionNames = Object.keys(sections);
 
+<<<<<<< HEAD
 const getInitialState = <T,>(key: string, defaultValue: T): T => {
   if (typeof window === 'undefined') {
     return defaultValue;
@@ -53,6 +66,14 @@ export function Quiz() {
     window.localStorage.setItem('quizIsFinished', JSON.stringify(isFinished));
     window.localStorage.setItem('quizScore', JSON.stringify(score));
   }, [currentQuestionIndex, selectedAnswers, isFinished, score]);
+=======
+export function Quiz() {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
+  const [isFinished, setIsFinished] = useState(false);
+  const [score, setScore] = useState(0);
+  const [showFeedback, setShowFeedback] = useState(false);
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
   
   const currentQuestion = useMemo(() => quizData[currentQuestionIndex], [currentQuestionIndex]);
   const selectedAnswer = selectedAnswers[currentQuestionIndex];
@@ -87,6 +108,7 @@ export function Quiz() {
     setIsFinished(false);
     setScore(0);
     setShowFeedback(false);
+<<<<<<< HEAD
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('quizCurrentQuestionIndex');
       window.localStorage.removeItem('quizSelectedAnswers');
@@ -97,11 +119,17 @@ export function Quiz() {
   
   const scorePercentage = (score / quizData.length) * 100;
   const quizProgress = ((currentQuestionIndex + 1) / quizData.length) * 100;
+=======
+  };
+  
+  const scorePercentage = (score / quizData.length) * 100;
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
   const isCurrentAnswerCorrect = showFeedback && selectedAnswer === currentQuestion.correctAnswer;
 
   if (isFinished) {
     const isGoodScore = scorePercentage >= 80;
     return (
+<<<<<<< HEAD
       <Card className="w-full max-w-4xl border-primary/20 shadow-2xl [box-shadow:0_0_2rem_hsl(var(--primary)/0.2)]">
         <CardHeader className="text-center p-6">
           <CardTitle className="text-3xl font-black">Quiz Complete!</CardTitle>
@@ -120,6 +148,23 @@ export function Quiz() {
                   Excellent work!
                 </AlertTitle>
                 <AlertDescription className="text-green-200/80">
+=======
+      <Card className="w-full max-w-4xl shadow-2xl [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
+        <CardHeader className="text-center">
+          <CardTitle className="text-3xl font-bold">Quiz Complete!</CardTitle>
+          <CardDescription className="text-lg">You scored {score} out of {quizData.length}</CardDescription>
+          <Progress value={scorePercentage} className="w-full mt-4 h-4" />
+        </CardHeader>
+        <CardContent>
+          <div className="my-6">
+            {isGoodScore ? (
+              <Alert className="border-green-500/50 text-green-700 dark:text-green-400">
+                <Trophy className="h-5 w-5 text-green-500" />
+                <AlertTitle className="font-bold text-lg text-green-600 dark:text-green-500">
+                  Excellent work!
+                </AlertTitle>
+                <AlertDescription>
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
                   You have a strong understanding of these financial concepts. Now it's time to go apply your knowledge and build your wealth!
                 </AlertDescription>
               </Alert>
@@ -159,7 +204,11 @@ export function Quiz() {
                             <p className={cn("p-2 rounded-md", isCorrect ? "bg-green-500/20" : "bg-red-500/20")}>Your answer: {userAnswer}</p>
                             {!isCorrect && <p className="p-2 rounded-md bg-green-500/20">Correct answer: {question.correctAnswer}</p>}
                             <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-md">
+<<<<<<< HEAD
                               <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+=======
+                              <Lightbulb className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
                               <p className="text-muted-foreground">{question.explanation}</p>
                             </div>
                           </AccordionContent>
@@ -172,7 +221,11 @@ export function Quiz() {
             ))}
           </Accordion>
         </CardContent>
+<<<<<<< HEAD
         <CardFooter className="justify-center p-6">
+=======
+        <CardFooter className="justify-center">
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
           <Button onClick={handleReset} size="lg">
             <RotateCw className="mr-2 h-4 w-4" /> Try Again
           </Button>
@@ -182,6 +235,7 @@ export function Quiz() {
   }
 
   return (
+<<<<<<< HEAD
     <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden border-primary/20 [box-shadow:0_0_2rem_hsl(var(--primary)/0.2)]">
       {isCurrentAnswerCorrect && <Celebration />}
       <div className="p-6">
@@ -193,6 +247,17 @@ export function Quiz() {
       </div>
      
       <CardContent className="pt-0">
+=======
+    <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
+      {isCurrentAnswerCorrect && <Celebration />}
+      <CardHeader>
+        <CardDescription>
+          {currentQuestion.section} - Question {currentQuestionIndex + 1} of {quizData.length}
+        </CardDescription>
+        <CardTitle className="text-2xl">{currentQuestion.question}</CardTitle>
+      </CardHeader>
+      <CardContent>
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
         <RadioGroup
           value={selectedAnswer}
           onValueChange={handleAnswerSelect}
@@ -210,15 +275,25 @@ export function Quiz() {
                   className={cn(
                     "peer h-6 w-6 border-2",
                     showFeedback && isSelected && !isCorrect && "bg-red-500 border-red-500 text-destructive-foreground",
+<<<<<<< HEAD
                     showFeedback && isCorrect && "bg-green-500 border-green-500 text-white",
+=======
+                    showFeedback && isCorrect && "bg-primary border-primary text-primary-foreground",
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
                   )}
                 />
                 <Label
                   htmlFor={`q${currentQuestion.id}-opt${index}`}
                   className={cn(
+<<<<<<< HEAD
                     "flex-1 ml-4 p-4 rounded-lg border-2 transition-all cursor-pointer peer-data-[state=checked]:border-primary bg-muted/30 hover:bg-muted/70",
                     showFeedback && isSelected && !isCorrect && "bg-red-500/20 border-red-500/50 text-foreground",
                     showFeedback && isCorrect && "bg-green-500/20 border-green-500/50 text-foreground",
+=======
+                    "flex-1 ml-4 p-4 rounded-lg border-2 border-transparent transition-all cursor-pointer peer-data-[state=checked]:border-accent bg-muted/30 hover:bg-muted/70",
+                    showFeedback && isSelected && !isCorrect && "bg-red-500/20 border-red-500/50 text-foreground",
+                    showFeedback && isCorrect && "bg-primary/20 border-primary/50 text-foreground",
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
                   )}
                 >
                   {option}
@@ -228,8 +303,12 @@ export function Quiz() {
           })}
         </RadioGroup>
       </CardContent>
+<<<<<<< HEAD
       <CardFooter className="justify-between items-center p-6">
         <p className="text-sm text-muted-foreground">Question {currentQuestionIndex + 1} of {quizData.length}</p>
+=======
+      <CardFooter className="justify-end">
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
         <Button onClick={handleSubmit} disabled={!selectedAnswer || showFeedback} size="lg">
           {currentQuestionIndex === quizData.length - 1 ? 'Finish' : 'Submit Answer'}
         </Button>

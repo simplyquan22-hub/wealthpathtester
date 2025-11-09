@@ -14,19 +14,33 @@ body {
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
+<<<<<<< HEAD
     --primary: 45 90% 55%; /* Gold */
     --primary-foreground: 45 90% 5%;
+=======
+    --primary: 197 71% 73%; /* Baby Blue */
+    --primary-foreground: 218 100% 10%;
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
+<<<<<<< HEAD
     --accent: 150 50% 80%; /* Light Mint Green */
     --accent-foreground: 140 40% 15%;
+=======
+    --accent: 90 60% 50%; /* Lime Green */
+    --accent-foreground: 218 100% 10%;
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
+<<<<<<< HEAD
     --ring: 45 90% 55%;
+=======
+    --ring: 197 71% 73%;
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -35,6 +49,7 @@ body {
     --radius: 0.5rem;
   }
   .dark {
+<<<<<<< HEAD
     --background: 140 40% 8%; /* Deep Green */
     --foreground: 140 25% 95%;
     --card: 140 40% 12%;
@@ -54,6 +69,27 @@ body {
     --border: 140 40% 20%;
     --input: 140 40% 20%;
     --ring: 45 90% 55%;
+=======
+    --background: 218 100% 28%;
+    --foreground: 210 40% 98%;
+    --card: 218 100% 32%;
+    --card-foreground: 210 40% 98%;
+    --popover: 218 100% 28%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 197 71% 73%; /* Baby Blue */
+    --primary-foreground: 218 100% 10%;
+    --secondary: 218 100% 35%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 218 100% 35%;
+    --muted-foreground: 210 40% 60%;
+    --accent: 90 60% 50%; /* Lime Green */
+    --accent-foreground: 218 100% 10%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 218 100% 40%;
+    --input: 218 100% 40%;
+    --ring: 197 71% 73%;
+>>>>>>> f09f6d8cf380758e93c57a2d5533410726acd851
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;

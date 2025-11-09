@@ -12,6 +12,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { CheckCircle2, XCircle, Lightbulb, RotateCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Celebration from './celebration';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Trophy } from 'lucide-react';
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -71,6 +73,7 @@ export function Quiz() {
   const isCurrentAnswerCorrect = showFeedback && selectedAnswer === currentQuestion.correctAnswer;
 
   if (isFinished) {
+    const isGoodScore = scorePercentage >= 80;
     return (
       <Card className="w-full max-w-4xl shadow-2xl">
         <CardHeader className="text-center">
@@ -79,6 +82,29 @@ export function Quiz() {
           <Progress value={scorePercentage} className="w-full mt-4 h-4" />
         </CardHeader>
         <CardContent>
+          <div className="my-6">
+            {isGoodScore ? (
+              <Alert className="border-green-500/50 text-green-700 dark:text-green-400">
+                <Trophy className="h-5 w-5 text-green-500" />
+                <AlertTitle className="font-bold text-lg text-green-600 dark:text-green-500">
+                  Excellent work!
+                </AlertTitle>
+                <AlertDescription>
+                  You have a strong understanding of these financial concepts. Now it's time to go apply your knowledge and build your wealth!
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <Alert variant="destructive">
+                <RotateCw className="h-5 w-5" />
+                <AlertTitle className="font-bold text-lg">
+                  Keep learning!
+                </AlertTitle>
+                <AlertDescription>
+                  Don't worry, building financial literacy is a journey. We recommend you retake the quiz or go back to the WealthPath courses to review the material.
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
           <h3 className="text-xl font-semibold mb-4 text-center">Review Your Answers</h3>
           <Accordion type="multiple" className="w-full">
             {sectionNames.map(sectionName => (

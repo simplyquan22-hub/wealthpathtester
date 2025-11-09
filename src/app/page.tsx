@@ -19,9 +19,9 @@ export default function Home() {
         </p>
       </div>
       <Quiz />
-      <Card className="w-full max-w-2xl mt-8 shadow-lg">
+      <Card className="w-full max-w-2xl mt-8 bg-secondary/50 border-primary/20 shadow-lg">
         <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
+          <div className="text-center sm:text-left">
             <h3 className="text-xl font-semibold">Need to Review?</h3>
             <p className="text-muted-foreground">Head back to our course PDF to sharpen your knowledge.</p>
           </div>

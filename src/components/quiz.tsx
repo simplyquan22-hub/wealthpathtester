@@ -102,7 +102,7 @@ export function Quiz() {
   if (isFinished) {
     const isGoodScore = scorePercentage >= 80;
     return (
-      <Card className="w-full max-w-4xl shadow-2xl [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
+      <Card className="w-full max-w-4xl border-primary/20 shadow-2xl [box-shadow:0_0_2rem_hsl(var(--primary)/0.2)]">
         <CardHeader className="text-center p-6">
           <CardTitle className="text-3xl font-black">Quiz Complete!</CardTitle>
           <CardDescription className="text-lg">You scored {score} out of {quizData.length}</CardDescription>
@@ -114,12 +114,12 @@ export function Quiz() {
         <CardContent className="p-6">
           <div className="my-6">
             {isGoodScore ? (
-              <Alert className="border-accent/50 bg-accent/10">
-                <Trophy className="h-5 w-5 text-accent" />
-                <AlertTitle className="font-bold text-lg text-accent">
+              <Alert className="border-accent/50 bg-green-500/10 text-green-500">
+                <Trophy className="h-5 w-5 text-green-400" />
+                <AlertTitle className="font-bold text-lg text-green-400">
                   Excellent work!
                 </AlertTitle>
-                <AlertDescription>
+                <AlertDescription className="text-green-200/80">
                   You have a strong understanding of these financial concepts. Now it's time to go apply your knowledge and build your wealth!
                 </AlertDescription>
               </Alert>
@@ -159,7 +159,7 @@ export function Quiz() {
                             <p className={cn("p-2 rounded-md", isCorrect ? "bg-green-500/20" : "bg-red-500/20")}>Your answer: {userAnswer}</p>
                             {!isCorrect && <p className="p-2 rounded-md bg-green-500/20">Correct answer: {question.correctAnswer}</p>}
                             <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-md">
-                              <Lightbulb className="h-5 w-5 text-accent flex-shrink-0 mt-1" />
+                              <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
                               <p className="text-muted-foreground">{question.explanation}</p>
                             </div>
                           </AccordionContent>
@@ -182,7 +182,7 @@ export function Quiz() {
   }
 
   return (
-    <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
+    <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden border-primary/20 [box-shadow:0_0_2rem_hsl(var(--primary)/0.2)]">
       {isCurrentAnswerCorrect && <Celebration />}
       <div className="p-6">
         <Progress value={quizProgress} className="mb-4 h-2"/>
@@ -210,15 +210,15 @@ export function Quiz() {
                   className={cn(
                     "peer h-6 w-6 border-2",
                     showFeedback && isSelected && !isCorrect && "bg-red-500 border-red-500 text-destructive-foreground",
-                    showFeedback && isCorrect && "bg-primary border-primary text-primary-foreground",
+                    showFeedback && isCorrect && "bg-green-500 border-green-500 text-white",
                   )}
                 />
                 <Label
                   htmlFor={`q${currentQuestion.id}-opt${index}`}
                   className={cn(
-                    "flex-1 ml-4 p-4 rounded-lg border-2 border-transparent transition-all cursor-pointer peer-data-[state=checked]:border-accent bg-muted/30 hover:bg-muted/70",
+                    "flex-1 ml-4 p-4 rounded-lg border-2 transition-all cursor-pointer peer-data-[state=checked]:border-primary bg-muted/30 hover:bg-muted/70",
                     showFeedback && isSelected && !isCorrect && "bg-red-500/20 border-red-500/50 text-foreground",
-                    showFeedback && isCorrect && "bg-primary/20 border-primary/50 text-foreground",
+                    showFeedback && isCorrect && "bg-green-500/20 border-green-500/50 text-foreground",
                   )}
                 >
                   {option}

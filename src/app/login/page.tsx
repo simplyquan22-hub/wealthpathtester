@@ -1,15 +1,15 @@
 'use client';
 
 import {
-  getAuth,
   GoogleAuthProvider,
+  OAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { useFirebase } from '@/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, User } from 'firebase/firestore';
 
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -32,6 +32,11 @@ const GoogleIcon = () => (
   </svg>
 );
 
+const AppleIcon = () => (
+    <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
+        <path d="M19.393,13.633c-0.033,3.385-2.137,6.035-5.253,6.035c-2.352,0-3.893-1.488-5.02-1.488c-1.144,0-2.822,1.455-4.333,1.455 c-1.527,0-3.038-1.55-4.137-3.696c-1.58-3.078-0.66-7.518,2.01-10.02c1.326-1.246,3.228-1.986,5.032-1.986 c1.697,0,3.31,0.852,4.356,0.852c1.014,0,2.954-0.924,4.9-0.924c1.55,0,3.585,0.611,4.789,2.05 C19.393,13.633,19.393,13.633,19.393,13.633z M15.532,2.305c1.17-1.404,1.838-3.33,1.614-5.305 c-1.898,0.083-3.956,1.246-5.126,2.65C12.759,0.274,12.091-1.65,11.868-3.623c1.93,0.033,3.924-1.196,5.093-2.62 C16.223-5.044,15.637-3.121,15.532,2.305z" transform="translate(4.607 10.323)" fill="currentColor"></path>
+    </svg>
+)
 
 export default function LoginPage() {
   const { auth, firestore, user } = useFirebase();
@@ -46,44 +51,63 @@ export default function LoginPage() {
     }
   }, [user, router, searchParams]);
 
+  const handleSuccessfulSignIn = async (user: any) => {
+    if (!firestore) return;
+    const userDocRef = doc(firestore, "users", user.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (!userDoc.exists()) {
+      await setDoc(userDocRef, {
+        id: user.uid,
+        email: user.email,
+        name: user.displayName,
+        quizHistoryIds: [],
+      });
+    }
+
+    const redirect = searchParams.get('redirect') || '/dashboard';
+    router.push(redirect);
+  };
+
   const signInWithGoogle = async () => {
-    if (!auth || !firestore) return;
+    if (!auth) return;
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-
-      // Check if user profile exists, if not, create one
-      const userDocRef = doc(firestore, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-
-      if (!userDoc.exists()) {
-        await setDoc(userDocRef, {
-          id: user.uid,
-          email: user.email,
-          name: user.displayName,
-          quizHistoryIds: [],
-        });
-      }
-
-      const redirect = searchParams.get('redirect') || '/dashboard';
-      router.push(redirect);
+      await handleSuccessfulSignIn(result.user);
     } catch (error) {
       console.error("Error signing in with Google: ", error);
     }
   };
 
+  const signInWithApple = async () => {
+    if (!auth) return;
+    const provider = new OAuthProvider('apple.com');
+    try {
+      const result = await signInWithPopup(auth, provider);
+      await handleSuccessfulSignIn(result.user);
+    } catch (error) {
+      console.error("Error signing in with Apple: ", error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
-      <div className="w-full max-w-sm p-8 space-y-6 bg-card rounded-lg shadow-lg">
+      <div className="w-full max-w-sm p-8 space-y-4 bg-card rounded-lg shadow-lg">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-foreground">Welcome Back</h1>
           <p className="text-muted-foreground">Sign in to continue your journey.</p>
         </div>
-        <Button onClick={signInWithGoogle} className="w-full" variant="outline">
-          <GoogleIcon />
-          Sign in with Google
-        </Button>
+        <div className="space-y-3">
+            <Button onClick={signInWithGoogle} className="w-full" variant="outline">
+                <GoogleIcon />
+                Sign in with Google
+            </Button>
+            <Button onClick={signInWithApple} className="w-full bg-black text-white hover:bg-black/80">
+                <AppleIcon />
+                Sign in with Apple
+            </Button>
+        </div>
       </div>
     </div>
   );

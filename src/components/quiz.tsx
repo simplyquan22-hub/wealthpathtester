@@ -128,18 +128,28 @@ export function Quiz() {
     if (showFeedback) return;
     const newAnswers = { ...selectedAnswers, [currentQuestionIndex]: answer };
     setSelectedAnswers(newAnswers);
+  };
+  
+  const handleSubmit = () => {
+    if (!selectedAnswer) return;
 
-    const isCorrect = answer === currentQuestion.correctAnswer;
-    if (isCorrect) {
-      setScore(prev => prev + 1);
-    } else {
-      // If user changes from a correct to incorrect answer before submitting
-      const previouslySelected = selectedAnswers[currentQuestionIndex];
-      if (previouslySelected === currentQuestion.correctAnswer && previouslySelected !== answer) {
-        setScore(prev => prev -1);
-      }
-    }
     setShowFeedback(true);
+
+    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+    if (isCorrect) {
+      // Check if it's a new correct answer
+      const previouslySelected = selectedAnswers[currentQuestionIndex];
+      const previousStateWasIncorrect = previouslySelected && previouslySelected !== currentQuestion.correctAnswer;
+      if(!previouslySelected || previousStateWasIncorrect){
+         setScore(prev => prev + 1);
+      }
+    } else {
+       // If user had previously selected the correct answer and changed to incorrect
+       const previouslySelected = selectedAnswers[currentQuestionIndex];
+       if (previouslySelected === currentQuestion.correctAnswer) {
+          setScore(prev => Math.max(0, prev - 1));
+       }
+    }
 
     setTimeout(() => {
       if (currentQuestionIndex < quizData.length - 1) {
@@ -149,7 +159,7 @@ export function Quiz() {
       }
       setShowFeedback(false);
     }, 2000);
-  };
+  }
 
   const handleReset = () => {
     setCurrentQuestionIndex(0);
@@ -298,6 +308,7 @@ export function Quiz() {
           value={selectedAnswer}
           onValueChange={handleAnswerSelect}
           className="space-y-3"
+          disabled={showFeedback}
         >
           {currentQuestion.options.map((option, index) => {
             const isSelected = selectedAnswer === option;
@@ -327,7 +338,7 @@ export function Quiz() {
       </CardContent>
       <CardFooter className="justify-between items-center p-6">
         <p className="text-sm text-muted-foreground">Question {currentQuestionIndex + 1} of {quizData.length}</p>
-        <Button onClick={() => {}} disabled={true} size="lg">
+        <Button onClick={handleSubmit} disabled={!selectedAnswer || showFeedback} size="lg">
           {currentQuestionIndex === quizData.length - 1 ? 'Finish' : 'Submit Answer'}
         </Button>
       </CardFooter>

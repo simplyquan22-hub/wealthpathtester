@@ -9,11 +9,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, XCircle, Lightbulb, RotateCw } from 'lucide-react';
+import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Celebration from './celebration';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Trophy } from 'lucide-react';
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -97,23 +96,27 @@ export function Quiz() {
   };
   
   const scorePercentage = (score / quizData.length) * 100;
+  const quizProgress = ((currentQuestionIndex + 1) / quizData.length) * 100;
   const isCurrentAnswerCorrect = showFeedback && selectedAnswer === currentQuestion.correctAnswer;
 
   if (isFinished) {
     const isGoodScore = scorePercentage >= 80;
     return (
       <Card className="w-full max-w-4xl shadow-2xl [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold">Quiz Complete!</CardTitle>
+        <CardHeader className="text-center p-6">
+          <CardTitle className="text-3xl font-black">Quiz Complete!</CardTitle>
           <CardDescription className="text-lg">You scored {score} out of {quizData.length}</CardDescription>
-          <Progress value={scorePercentage} className="w-full mt-4 h-4" />
+          <div className="relative pt-4">
+            <Progress value={scorePercentage} className="h-4" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-primary-foreground text-sm">{Math.round(scorePercentage)}%</div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="my-6">
             {isGoodScore ? (
-              <Alert className="border-green-500/50 text-green-700 dark:text-green-400">
-                <Trophy className="h-5 w-5 text-green-500" />
-                <AlertTitle className="font-bold text-lg text-green-600 dark:text-green-500">
+              <Alert className="border-accent/50 bg-accent/10">
+                <Trophy className="h-5 w-5 text-accent" />
+                <AlertTitle className="font-bold text-lg text-accent">
                   Excellent work!
                 </AlertTitle>
                 <AlertDescription>
@@ -169,7 +172,7 @@ export function Quiz() {
             ))}
           </Accordion>
         </CardContent>
-        <CardFooter className="justify-center">
+        <CardFooter className="justify-center p-6">
           <Button onClick={handleReset} size="lg">
             <RotateCw className="mr-2 h-4 w-4" /> Try Again
           </Button>
@@ -181,13 +184,15 @@ export function Quiz() {
   return (
     <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
       {isCurrentAnswerCorrect && <Celebration />}
-      <CardHeader>
-        <CardDescription>
-          {currentQuestion.section} - Question {currentQuestionIndex + 1} of {quizData.length}
+      <div className="p-6">
+        <Progress value={quizProgress} className="mb-4 h-2"/>
+        <CardDescription className="font-semibold text-primary">
+          {currentQuestion.section}
         </CardDescription>
-        <CardTitle className="text-2xl">{currentQuestion.question}</CardTitle>
-      </CardHeader>
-      <CardContent>
+         <CardTitle className="text-2xl mt-1">{currentQuestion.question}</CardTitle>
+      </div>
+     
+      <CardContent className="pt-0">
         <RadioGroup
           value={selectedAnswer}
           onValueChange={handleAnswerSelect}
@@ -223,7 +228,8 @@ export function Quiz() {
           })}
         </RadioGroup>
       </CardContent>
-      <CardFooter className="justify-end">
+      <CardFooter className="justify-between items-center p-6">
+        <p className="text-sm text-muted-foreground">Question {currentQuestionIndex + 1} of {quizData.length}</p>
         <Button onClick={handleSubmit} disabled={!selectedAnswer || showFeedback} size="lg">
           {currentQuestionIndex === quizData.length - 1 ? 'Finish' : 'Submit Answer'}
         </Button>

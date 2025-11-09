@@ -12,6 +12,16 @@ export default function Header() {
   if (pathname === '/') {
     return null;
   }
+  
+  // Don't render header if dashboard page doesn't exist
+  if (pathname === '/dashboard') {
+     try {
+      require.resolve('@/app/dashboard/page.tsx');
+    } catch (e) {
+      return null;
+    }
+  }
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

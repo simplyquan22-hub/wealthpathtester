@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'WealthPath’s Knowledge Check-in',
+  title: 'WealthPath’s Knowledge Tester',
   description: 'Test your financial knowledge with WealthPath Courses.',
 };
 

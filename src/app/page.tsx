@@ -1,15 +1,9 @@
 import { Quiz } from "@/components/quiz";
-import { BookOpen, DollarSign, LineChart } from "lucide-react";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 md:p-12">
       <header className="w-full max-w-4xl mb-8 text-center">
-        <div className="flex items-center justify-center gap-4 mb-2">
-          <DollarSign className="w-8 h-8 text-primary" />
-          <LineChart className="w-8 h-8 text-primary" />
-          <BookOpen className="w-8 h-8 text-primary" />
-        </div>
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground font-headline">
           WealthPath Courses Test
         </h1>

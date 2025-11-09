@@ -75,7 +75,7 @@ export function Quiz() {
   if (isFinished) {
     const isGoodScore = scorePercentage >= 80;
     return (
-      <Card className="w-full max-w-4xl shadow-2xl">
+      <Card className="w-full max-w-4xl shadow-2xl [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold">Quiz Complete!</CardTitle>
           <CardDescription className="text-lg">You scored {score} out of {quizData.length}</CardDescription>
@@ -152,7 +152,7 @@ export function Quiz() {
   }
 
   return (
-    <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden">
+    <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden [box-shadow:0_0_2rem_hsl(var(--primary)/0.5)]">
       {isCurrentAnswerCorrect && <Celebration />}
       <CardHeader>
         <CardDescription>

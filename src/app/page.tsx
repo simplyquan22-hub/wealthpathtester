@@ -16,7 +16,7 @@ export default function Home() {
           </svg>
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground font-headline">
-          WealthPath
+          WealthPath's Test
         </h1>
       </header>
       <div className="w-full max-w-4xl text-center mb-8">

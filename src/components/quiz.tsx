@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useMemo, useEffect } from 'react';
 import { quizData, type Question } from '@/lib/quiz-data';
@@ -12,6 +12,9 @@ import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy, AlertTriangle } fro
 import { cn } from '@/lib/utils';
 import Celebration from './celebration';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useFirebase } from '@/firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -25,65 +28,15 @@ const sections = quizData.reduce((acc, question) => {
 
 const sectionNames = Object.keys(sections);
 
-const getInitialState = <T,>(key: string, defaultValue: T): T => {
-  if (typeof window === 'undefined') {
-    return defaultValue;
-  }
-  try {
-    const item = window.localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue;
-  } catch (error) {
-    console.warn(`Error reading localStorage key “${key}”:`, error);
-    return defaultValue;
-  }
-};
-
 export function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
+  const { user, firestore, isUserLoading } = useFirebase();
+  const router = useRouter();
 
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (isHydrated) {
-      const savedIndex = getInitialState('quizCurrentQuestionIndex', 0);
-      const savedAnswers = getInitialState('quizSelectedAnswers', {});
-      const savedFinished = getInitialState('quizIsFinished', false);
-      
-      setCurrentQuestionIndex(savedIndex);
-      setSelectedAnswers(savedAnswers);
-      setIsFinished(savedFinished);
-
-      if (savedFinished) {
-        // Recalculate score based on saved answers if quiz was finished
-        const newScore = quizData.reduce((acc, question, index) => {
-          if (savedAnswers[index] === question.correctAnswer) {
-            return acc + 1;
-          }
-          return acc;
-        }, 0);
-        setScore(newScore);
-      }
-    }
-  }, [isHydrated]);
-
-  useEffect(() => {
-    if (!isHydrated) return;
-    try {
-      window.localStorage.setItem('quizCurrentQuestionIndex', JSON.stringify(currentQuestionIndex));
-      window.localStorage.setItem('quizSelectedAnswers', JSON.stringify(selectedAnswers));
-      window.localStorage.setItem('quizIsFinished', JSON.stringify(isFinished));
-    } catch (error) {
-      console.warn('Could not save quiz state to localStorage:', error);
-    }
-  }, [currentQuestionIndex, selectedAnswers, isFinished, isHydrated]);
-  
   const currentQuestion = useMemo(() => quizData[currentQuestionIndex], [currentQuestionIndex]);
   const selectedAnswer = selectedAnswers[currentQuestionIndex];
 
@@ -92,12 +45,13 @@ export function Quiz() {
     setSelectedAnswers({ ...selectedAnswers, [currentQuestionIndex]: answer });
   };
   
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedAnswer) return;
     setShowFeedback(true);
   
-    setTimeout(() => {
-      const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+  
+    setTimeout(async () => {
       if (isCorrect) {
         setScore(prev => prev + 1);
       }
@@ -107,8 +61,6 @@ export function Quiz() {
       if (currentQuestionIndex < quizData.length - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
       } else {
-        setIsFinished(true);
-        // Final score calculation happens here to ensure it's accurate
         const finalScore = quizData.reduce((acc, question, index) => {
           const finalAnswer = index === currentQuestionIndex ? selectedAnswer : selectedAnswers[index];
           if (finalAnswer === question.correctAnswer) {
@@ -117,8 +69,23 @@ export function Quiz() {
           return acc;
         }, 0);
         setScore(finalScore);
+        setIsFinished(true);
+
+        if (user && firestore) {
+          try {
+            await addDoc(collection(firestore, `users/${user.uid}/quizHistory`), {
+              quizId: 'financial_literacy_v1',
+              score: finalScore,
+              totalQuestions: quizData.length,
+              dateTaken: new Date().toISOString(),
+              answers: selectedAnswers
+            });
+          } catch (error) {
+            console.error("Error saving quiz history: ", error);
+          }
+        }
       }
-    }, 2000); // Wait for feedback animation
+    }, 1200); // Wait for feedback animation
   };
 
   const handleReset = () => {
@@ -127,45 +94,15 @@ export function Quiz() {
     setIsFinished(false);
     setScore(0);
     setShowFeedback(false);
-    if (typeof window !== 'undefined') {
-      try {
-        window.localStorage.removeItem('quizCurrentQuestionIndex');
-        window.localStorage.removeItem('quizSelectedAnswers');
-        window.localStorage.removeItem('quizIsFinished');
-      } catch (error) {
-        console.warn('Could not remove quiz state from localStorage:', error);
-      }
-    }
   };
   
+  const handleReview = () => {
+    router.push('/dashboard');
+  };
+
   const scorePercentage = (score / quizData.length) * 100;
   const quizProgress = ((isFinished ? quizData.length : currentQuestionIndex) / quizData.length) * 100;
   const isCurrentAnswerCorrect = showFeedback && selectedAnswer === currentQuestion.correctAnswer;
-
-  if (!isHydrated) {
-    // Render a loading state or nothing until the component is hydrated
-    return (
-      <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden">
-        <CardHeader className="p-6">
-          <div className="h-2 bg-muted rounded-full mb-4"></div>
-          <div className="h-4 bg-muted rounded w-1/4 mb-2"></div>
-          <div className="h-8 bg-muted rounded w-3/4"></div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="space-y-3">
-            <div className="h-14 bg-muted/30 rounded-lg"></div>
-            <div className="h-14 bg-muted/30 rounded-lg"></div>
-            <div className="h-14 bg-muted/30 rounded-lg"></div>
-            <div className="h-14 bg-muted/30 rounded-lg"></div>
-          </div>
-        </CardContent>
-        <CardFooter className="justify-between items-center p-6">
-          <div className="h-5 bg-muted rounded w-1/5"></div>
-          <div className="h-11 bg-muted rounded w-1/3"></div>
-        </CardFooter>
-      </Card>
-    );
-  }
 
   if (isFinished) {
     const isGoodScore = scorePercentage >= 80;
@@ -190,7 +127,6 @@ export function Quiz() {
         }
       }
       
-      // Only show a weakest section if the user got at least 2 questions wrong in it
       return maxIncorrect >= 2 ? worstSection : null;
     }, [selectedAnswers]);
 
@@ -264,10 +200,15 @@ export function Quiz() {
               ))}
             </Accordion>
           </CardContent>
-          <CardFooter className="justify-center p-6 border-t">
-            <Button onClick={handleReset} size="lg">
+          <CardFooter className="justify-center p-6 border-t gap-4">
+            <Button onClick={handleReset} size="lg" variant="outline">
               <RotateCw className="mr-2 h-4 w-4" /> Try Again
             </Button>
+            {user && (
+              <Button onClick={handleReview} size="lg">
+                View My Progress
+              </Button>
+            )}
           </CardFooter>
         </Card>
     );
@@ -320,7 +261,7 @@ export function Quiz() {
       <CardFooter className="justify-between items-center p-6">
         <p className="text-sm text-muted-foreground">Question {currentQuestionIndex + 1} of {quizData.length}</p>
         <Button onClick={handleSubmit} disabled={!selectedAnswer || showFeedback} size="lg">
-          {currentQuestionIndex === quizData.length - 1 ? 'Finish' : 'Submit Answer'}
+          {showFeedback ? (isCurrentAnswerCorrect ? 'Correct!' : 'Incorrect') : (currentQuestionIndex === quizData.length - 1 ? 'Finish Quiz' : 'Submit Answer')}
         </Button>
       </CardFooter>
     </Card>

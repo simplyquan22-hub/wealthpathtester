@@ -3,6 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { Inter, Nunito } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { FirebaseClientProvider } from '@/firebase';
+import Header from '@/components/header';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,10 +34,13 @@ export default function RootLayout({
         inter.variable,
         nunito.variable
       )}>
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Toaster />
+        <FirebaseClientProvider>
+          <Header />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Toaster />
+        </FirebaseClientProvider>
         <footer className="w-full bg-transparent mt-auto py-8">
           <div className="max-w-4xl mx-auto px-4 text-center text-muted-foreground">
             <p className="font-bold text-lg text-foreground">WealthPath</p>

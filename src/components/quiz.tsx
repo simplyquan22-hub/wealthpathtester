@@ -211,7 +211,7 @@ export function Quiz() {
                 <Label
                   htmlFor={`q${currentQuestion.id}-opt${index}`}
                   className={cn(
-                    "flex-1 p-4 rounded-lg border-2 transition-all cursor-pointer bg-muted/30 hover:bg-muted/70 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10",
+                    "flex items-center p-4 rounded-lg border-2 transition-all cursor-pointer bg-muted/30 hover:bg-muted/70 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10",
                     showFeedback && isSelected && !isCorrect && "bg-red-500/20 border-red-500/50 text-foreground animate-in shake",
                     showFeedback && isCorrect && "bg-green-500/20 border-green-500/50 text-foreground animate-in pulse",
                   )}

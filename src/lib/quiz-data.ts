@@ -13,9 +13,9 @@ export const quizData: Question[] = [
     id: 1,
     question: "An investor who only seeks out information that confirms their existing beliefs about a 'hot' stock is exhibiting which bias?",
     options: [
-      "Loss Aversion",
       "Confirmation Bias",
-      "Recency Bias",
+      "Loss Aversion",
+      "Bandwagon Effect",
       "Anchoring"
     ],
     correctAnswer: "Confirmation Bias",
@@ -26,10 +26,10 @@ export const quizData: Question[] = [
     id: 2,
     question: "What is the primary difference between 'Systematic Risk' and 'Unsystematic Risk'?",
     options: [
-      "Systematic risk can be diversified away, while unsystematic risk cannot.",
-      "Unsystematic risk affects all companies, while systematic risk is company-specific.",
+      "Systematic risk is specific to one company, while unsystematic risk affects the whole market.",
       "Systematic risk (market risk) is undiversifiable, while unsystematic (specific) risk can be reduced through diversification.",
-      "Both are the same, but apply to different asset classes."
+      "Unsystematic risk is related to interest rates, while systematic risk is related to company management.",
+      "Both can be completely eliminated with a well-balanced portfolio."
     ],
     correctAnswer: "Systematic risk (market risk) is undiversifiable, while unsystematic (specific) risk can be reduced through diversification.",
     explanation: "Systematic risk, or market risk, affects the entire market (e.g., interest rate changes, recessions). Unsystematic risk is specific to a company or industry and can be mitigated by owning a variety of assets.",
@@ -42,7 +42,7 @@ export const quizData: Question[] = [
       "The Wealth Effect",
       "Lifestyle Creep",
       "The Law of Diminishing Returns",
-      "Income Elasticity"
+      "Inflationary Spending"
     ],
     correctAnswer: "Lifestyle Creep",
     explanation: "Lifestyle creep, or lifestyle inflation, is when spending increases as income grows. While seeming natural, it can severely limit one's ability to build wealth over the long term.",
@@ -52,10 +52,10 @@ export const quizData: Question[] = [
     id: 4,
     question: "What is 'Human Capital' in the context of personal finance?",
     options: [
-      "The money you inherited from your family.",
-      "The total value of your investment portfolio.",
+      "The total amount of cash in your emergency fund.",
+      "Your network of professional contacts.",
       "Your future earning potential based on your skills, knowledge, and experience.",
-      "A type of high-yield corporate bond."
+      "The initial amount of money you use to start investing."
     ],
     correctAnswer: "Your future earning potential based on your skills, knowledge, and experience.",
     explanation: "Human capital is your most valuable asset when you're young. It represents your ability to earn money throughout your career. Investing in skills and education directly increases it.",
@@ -66,9 +66,9 @@ export const quizData: Question[] = [
     question: "The concept of 'Time in the market, not timing the market' is a direct counter-argument to which investor behavior?",
     options: [
       "Dollar-cost averaging",
-      "Buy and hold investing",
       "Frequent trading based on market predictions",
-      "Portfolio rebalancing"
+      "Portfolio rebalancing",
+      "Buy and hold investing"
     ],
     correctAnswer: "Frequent trading based on market predictions",
     explanation: "This phrase highlights that trying to predict market tops and bottoms is often a losing game. Consistent, long-term investment (time in the market) has historically been more successful.",
@@ -78,10 +78,10 @@ export const quizData: Question[] = [
     id: 6,
     question: "What is the 'real rate of return' on an investment?",
     options: [
+      "The return shown on your brokerage statement.",
       "The return before taxes are paid.",
       "The return after adjusting for inflation.",
-      "The total dividend yield.",
-      "The guaranteed interest rate from a bank."
+      "The total return including dividends and capital gains."
     ],
     correctAnswer: "The return after adjusting for inflation.",
     explanation: "The real rate of return shows the true increase in your purchasing power. It is calculated by subtracting the inflation rate from your investment's nominal return.",
@@ -91,8 +91,8 @@ export const quizData: Question[] = [
     id: 7,
     question: "The 'Rule of 72' is a quick mental shortcut used to estimate what?",
     options: [
-      "The future value of a single investment.",
       "The number of years it will take for an investment to double in value.",
+      "The future value of a single investment.",
       "The ideal expense ratio for an ETF.",
       "The correct asset allocation for your age."
     ],
@@ -118,9 +118,9 @@ export const quizData: Question[] = [
     question: "An opportunity cost of keeping too much cash in a savings account during a bull market is...",
     options: [
       "The risk of the bank failing.",
-      "The monthly fees charged by the bank.",
       "Forgoing higher potential returns from the stock market.",
-      "The cash is not liquid enough to be accessed."
+      "The monthly fees charged by the bank.",
+      "Losing purchasing power due to taxes."
     ],
     correctAnswer: "Forgoing higher potential returns from the stock market.",
     explanation: "Opportunity cost is the potential benefit you miss out on when choosing one alternative over another. Keeping cash in savings means missing out on the growth it could have experienced if invested.",
@@ -130,8 +130,8 @@ export const quizData: Question[] = [
     id: 10,
     question: "What is the primary purpose of a 3-6 month emergency fund?",
     options: [
-      "To have 'dry powder' to invest when the market dips.",
       "To prevent the forced sale of long-term investments to cover unexpected expenses.",
+      "To have 'dry powder' to invest when the market dips.",
       "To earn a high rate of return in a liquid account.",
       "To meet the minimum requirements for opening a brokerage account."
     ],
@@ -144,9 +144,9 @@ export const quizData: Question[] = [
     question: "Paying off a credit card with a 22% APR is financially equivalent to what?",
     options: [
       "Earning a 22% tax-free return on an investment.",
-      "Losing 22% in the stock market.",
+      "A risk-free, guaranteed return of 22% on your money.",
       "Getting a 22% raise at your job.",
-      "A risk-free, guaranteed return of 22% on your money."
+      "Matching the historical average return of the S&P 500."
     ],
     correctAnswer: "A risk-free, guaranteed return of 22% on your money.",
     explanation: "Paying off high-interest debt provides a guaranteed 'return' equal to the interest rate. It's a powerful, risk-free financial move that's very difficult to beat with market investments.",
@@ -169,10 +169,10 @@ export const quizData: Question[] = [
     id: 13,
     question: "What is the main difference between 'risk tolerance' and 'risk capacity'?",
     options: [
-      "They are the same thing.",
+      "Tolerance is for stocks; capacity is for bonds.",
       "Tolerance is your emotional comfort with risk; capacity is your financial ability to withstand losses.",
       "Capacity is your emotional comfort with risk; tolerance is your financial ability to withstand losses.",
-      "Tolerance is for stocks; capacity is for bonds."
+      "They are the same thing and used interchangeably in finance."
     ],
     correctAnswer: "Tolerance is your emotional comfort with risk; capacity is your financial ability to withstand losses.",
     explanation: "You might feel comfortable with risk (high tolerance), but if you have a low income and high debt, you may not be able to afford a large loss (low capacity). Both are key to designing a portfolio.",
@@ -185,7 +185,7 @@ export const quizData: Question[] = [
       "Value Stock",
       "Blue-Chip Stock",
       "Growth Stock",
-      "Defensive Stock"
+      "Income Stock"
     ],
     correctAnswer: "Growth Stock",
     explanation: "Growth companies are focused on scaling their operations, and they use their earnings to fund R&D, acquisitions, and other expansion efforts to increase their market share and future profits.",
@@ -196,9 +196,9 @@ export const quizData: Question[] = [
     question: "Which of these 'market caps' typically has the highest potential for growth but also the highest volatility?",
     options: [
       "Large-cap",
-      "Mega-cap",
+      "Small-cap",
       "Mid-cap",
-      "Small-cap"
+      "Mega-cap"
     ],
     correctAnswer: "Small-cap",
     explanation: "Small-cap companies are younger and have more room to grow compared to their large-cap counterparts. This growth potential comes with higher risk and price volatility.",
@@ -209,8 +209,8 @@ export const quizData: Question[] = [
     question: "Which term best describes stocks of companies in sectors like utilities and consumer staples that tend to perform consistently regardless of the economic cycle?",
     options: [
       "Cyclical Stocks",
-      "Speculative Stocks",
       "Defensive Stocks",
+      "Blue-Chip Stocks",
       "Momentum Stocks"
     ],
     correctAnswer: "Defensive Stocks",
@@ -224,7 +224,7 @@ export const quizData: Question[] = [
       "Growth Investing",
       "Value Investing",
       "Momentum Investing",
-      "Socially Responsible Investing"
+      "Index Investing"
     ],
     correctAnswer: "Value Investing",
     explanation: "Value investors are like bargain hunters. They look for solid companies that are temporarily out of favor with the market, believing their true worth will eventually be recognized.",
@@ -234,9 +234,9 @@ export const quizData: Question[] = [
     id: 18,
     question: "What is an ETF's 'expense ratio'?",
     options: [
-      "The ratio of stocks to bonds inside the fund.",
       "The annual fee charged by the fund, expressed as a percentage of your investment.",
-      "A measure of the fund's past performance.",
+      "A measure of the fund's past performance relative to its benchmark.",
+      "The ratio of stocks to bonds inside the fund.",
       "The tax you pay when you sell the ETF."
     ],
     correctAnswer: "The annual fee charged by the fund, expressed as a percentage of your investment.",
@@ -248,8 +248,8 @@ export const quizData: Question[] = [
     question: "What is 'tracking error' in the context of an index fund?",
     options: [
       "A mistake in your brokerage account statement.",
+      "The tax consequence of frequent trading within the fund.",
       "The difference between the fund's return and the return of the index it's supposed to mimic.",
-      "The tax consequence of frequent trading.",
       "The delay in processing a mutual fund trade."
     ],
     correctAnswer: "The difference between the fund's return and the return of the index it's supposed to mimic.",
@@ -260,9 +260,9 @@ export const quizData: Question[] = [
     id: 20,
     question: "The key structural difference that often leads to ETFs being more tax-efficient than mutual funds is:",
     options: [
-      "ETFs never pay dividends.",
       "The 'in-kind' creation and redemption process for ETF shares.",
-      "ETFs are not regulated by the SEC.",
+      "ETFs are not required to distribute capital gains to shareholders.",
+      "ETFs are regulated by a different government body.",
       "Mutual funds are only for retirement accounts."
     ],
     correctAnswer: "The 'in-kind' creation and redemption process for ETF shares.",
@@ -273,10 +273,10 @@ export const quizData: Question[] = [
     id: 21,
     question: "A passively managed fund seeks to do what?",
     options: [
+      "Track the performance of a specific market index as closely as possible.",
       "Use expert managers to pick stocks they believe will beat the market.",
       "Generate the highest possible returns, regardless of risk.",
-      "Track the performance of a specific market index as closely as possible.",
-      "Invest only in government bonds."
+      "Invest only in government bonds for maximum safety."
     ],
     correctAnswer: "Track the performance of a specific market index as closely as possible.",
     explanation: "Passive management (like in an index fund) doesn't try to beat the market. It aims to replicate the market's performance by holding all (or a representative sample) of the securities in an index.",
@@ -287,9 +287,9 @@ export const quizData: Question[] = [
     question: "If you buy an S&P 500 index fund, your investment is concentrated in which country's market?",
     options: [
       "China",
-      "The United Kingdom",
-      "Japan",
-      "The United States"
+      "The United States",
+      "A mix of global developed countries",
+      "The United Kingdom"
     ],
     correctAnswer: "The United States",
     explanation: "The S&P 500 is an index of the 500 largest publicly traded companies in the United States. To invest internationally, you would need to look for international or global index funds.",
@@ -302,7 +302,7 @@ export const quizData: Question[] = [
       "When interest rates rise, bond prices also rise.",
       "When interest rates rise, bond prices fall.",
       "Interest rates have no effect on bond prices.",
-      "When interest rates fall, bond prices also fall."
+      "Bond prices and interest rates move together but not always."
     ],
     correctAnswer: "When interest rates rise, bond prices fall.",
     explanation: "This is an inverse relationship. If new bonds are being issued with higher interest rates (yields), existing bonds with lower rates become less attractive, so their prices must fall to compete.",
@@ -314,8 +314,8 @@ export const quizData: Question[] = [
     options: [
       "Time until maturity.",
       "Sensitivity to changes in interest rates.",
-      "Credit quality rating.",
-      "Dividend yield."
+      "Credit quality rating from Moody's or S&P.",
+      "Total return since it was issued."
     ],
     correctAnswer: "Sensitivity to changes in interest rates.",
     explanation: "Duration, measured in years, tells you how much a bond's price is likely to change for every 1% change in interest rates. A longer duration means higher sensitivity (more risk).",
@@ -338,10 +338,10 @@ export const quizData: Question[] = [
     id: 26,
     question: "What is a 'Qualified Dividend'?",
     options: [
-      "Any dividend paid by a foreign company.",
-      "A dividend that is guaranteed not to decrease.",
       "A dividend that meets certain IRS requirements to be taxed at lower capital gains rates.",
-      "A dividend that is automatically reinvested."
+      "Any dividend paid by a foreign company.",
+      "A dividend that is guaranteed to be paid every quarter.",
+      "A dividend that is automatically reinvested through a DRIP."
     ],
     correctAnswer: "A dividend that meets certain IRS requirements to be taxed at lower capital gains rates.",
     explanation: "Qualified dividends are taxed at the more favorable long-term capital gains tax rates, whereas ordinary (unqualified) dividends are taxed at your regular income tax rate.",
@@ -354,7 +354,7 @@ export const quizData: Question[] = [
       "The total dollar amount of the dividend paid per share.",
       "The annual dividend per share divided by the stock's current price.",
       "The percentage increase in the dividend payment from the previous year.",
-      "A guarantee of future dividend payments."
+      "A company's total dividends paid by its net income."
     ],
     correctAnswer: "The annual dividend per share divided by the stock's current price.",
     explanation: "Dividend yield is a percentage that shows how much a company pays in dividends each year relative to its stock price. It's a way to measure the return you get from dividends.",
@@ -364,9 +364,9 @@ export const quizData: Question[] = [
     id: 28,
     question: "What is the primary benefit of a Dividend Reinvestment Plan (DRIP)?",
     options: [
-      "It guarantees the company will always pay a dividend.",
       "It allows you to buy more shares commission-free, leveraging the power of compounding.",
-      "It makes your dividends tax-free.",
+      "It guarantees the company will always increase its dividend.",
+      "It makes your dividends tax-free until you sell the shares.",
       "It automatically sells your shares when the dividend is cut."
     ],
     correctAnswer: "It allows you to buy more shares commission-free, leveraging the power of compounding.",
@@ -377,10 +377,10 @@ export const quizData: Question[] = [
     id: 29,
     question: "In a 'core-satellite' portfolio construction, what is the role of the 'core'?",
     options: [
-      "To hold speculative, high-risk assets.",
+      "To hold speculative, high-risk assets for outsized returns.",
       "To provide broad, diversified market exposure through low-cost index funds.",
-      "To invest only in individual 'meme' stocks.",
-      "To hold cash and gold exclusively."
+      "To invest only in individual 'meme' stocks and cryptocurrencies.",
+      "To hold cash and gold exclusively as a defensive measure."
     ],
     correctAnswer: "To provide broad, diversified market exposure through low-cost index funds.",
     explanation: "The 'core' is the foundation of the portfolio, usually comprising the largest portion (e.g., 70-80%) and made up of stable, diversified investments like total market index funds.",
@@ -390,10 +390,10 @@ export const quizData: Question[] = [
     id: 30,
     question: "What is the primary purpose of asset allocation?",
     options: [
-      "To pick the single best-performing stock.",
-      "To eliminate all investment risk.",
-      "To maximize short-term gains.",
-      "To balance risk and reward by diversifying across different asset classes."
+      "To pick the single best-performing stock for the year.",
+      "To eliminate all investment risk from a portfolio.",
+      "To balance risk and reward by diversifying across different asset classes.",
+      "To maximize short-term gains through frequent trading."
     ],
     correctAnswer: "To balance risk and reward by diversifying across different asset classes.",
     explanation: "Asset allocation is the strategic process of dividing your portfolio among major categories like stocks, bonds, and cash. It's considered the most important driver of your long-term returns and risk level.",
@@ -403,13 +403,13 @@ export const quizData: Question[] = [
     id: 31,
     question: "Historically, what has been the main role of bonds in a traditional 60/40 stock/bond portfolio?",
     options: [
-      "To provide the highest possible long-term growth.",
-      "To act as a speculative bet on interest rates.",
       "To provide stability and income, and to hedge against stock market volatility.",
+      "To provide aggressive, high-risk growth.",
+      "To act as a speculative bet on interest rate changes.",
       "To invest in emerging technology companies."
     ],
     correctAnswer: "To provide stability and income, and to hedge against stock market volatility.",
-    explanation: "Bonds are typically less volatile than stocks and often move in the opposite direction during downturns. This provides a stabilizing 'cushion' for the overall portfolio.",
+    explanation: "Bonds are typically less volatile than stocks and often have a low or negative correlation during downturns. This provides a stabilizing 'cushion' for the overall portfolio.",
     section: "Portfolio Foundation"
   },
   {
@@ -418,7 +418,7 @@ export const quizData: Question[] = [
     options: [
       "Building the 'core' of your portfolio.",
       "A 'satellite' position used to enhance returns or diversification.",
-      "A strategy to eliminate all risk.",
+      "A strategy to eliminate all market risk.",
       "A typical strategy for a retiree seeking only income."
     ],
     correctAnswer: "A 'satellite' position used to enhance returns or diversification.",
@@ -429,10 +429,10 @@ export const quizData: Question[] = [
     id: 33,
     question: "A 'market order' to buy a stock does what?",
     options: [
-      "Executes the trade at a specific price you name, or not at all.",
       "Executes the trade at the best available price at that moment, guaranteeing execution but not the price.",
+      "Executes the trade at a specific price you name, or not at all.",
       "Executes the trade only at the end of the trading day.",
-      "Guarantees you will get the same price as the last trade."
+      "Guarantees you will get the same price as the last person who traded."
     ],
     correctAnswer: "Executes the trade at the best available price at that moment, guaranteeing execution but not the price.",
     explanation: "A market order prioritizes speed. It's an instruction to buy or sell immediately at the current market price. A 'limit order', by contrast, prioritizes price over speed.",
@@ -445,7 +445,7 @@ export const quizData: Question[] = [
       "Contributions are made with after-tax dollars.",
       "Withdrawals in retirement are always tax-free.",
       "Contributions may be tax-deductible, reducing your current taxable income.",
-      "They are completely exempt from all taxes forever."
+      "They are completely exempt from capital gains taxes."
     ],
     correctAnswer: "Contributions may be tax-deductible, reducing your current taxable income.",
     explanation: "The primary benefit of a Traditional IRA/401(k) is the immediate tax break. You contribute pre-tax money, which lowers your income tax bill for the year. Taxes are paid on withdrawals in retirement.",
@@ -455,8 +455,8 @@ export const quizData: Question[] = [
     id: 35,
     question: "At what age can you typically begin penalty-free withdrawals from a Traditional IRA or 401(k)?",
     options: [
-      "55",
       "59 ½",
+      "55",
       "62",
       "65"
     ],
@@ -468,10 +468,10 @@ export const quizData: Question[] = [
     id: 36,
     question: "What is a primary benefit of a Roth IRA?",
     options: [
-      "It has a higher annual contribution limit than a 401(k).",
-      "All contributions are tax-deductible in the present.",
       "Qualified withdrawals in retirement are 100% tax-free.",
-      "It has no income limits for contributions."
+      "All contributions are tax-deductible in the present.",
+      "It has a higher annual contribution limit than a 401(k).",
+      "It allows you to borrow against your contributions tax-free."
     ],
     correctAnswer: "Qualified withdrawals in retirement are 100% tax-free.",
     explanation: "With a Roth, you pay taxes on contributions today so that all your investment growth and withdrawals are completely free from taxes in retirement. This is a huge advantage, especially if you expect to be in a higher tax bracket later.",
@@ -481,9 +481,9 @@ export const quizData: Question[] = [
     id: 37,
     question: "The 'Backdoor Roth IRA' is a strategy used by whom?",
     options: [
-      "Teenagers who want to start investing early.",
       "Individuals whose income is too high to contribute to a Roth IRA directly.",
       "Retirees who want to avoid required minimum distributions.",
+      "Teenagers who want to start investing early with earned income.",
       "Anyone who wants to contribute more than the annual limit."
     ],
     correctAnswer: "Individuals whose income is too high to contribute to a Roth IRA directly.",
@@ -497,7 +497,7 @@ export const quizData: Question[] = [
       "Under age 25",
       "Age 50 and over",
       "Self-employed",
-      "High-income earners"
+      "New to investing"
     ],
     correctAnswer: "Age 50 and over",
     explanation: "To help those nearing retirement save more, the IRS allows individuals aged 50 and older to contribute an additional amount to their IRA each year, above the standard limit.",
@@ -507,10 +507,10 @@ export const quizData: Question[] = [
     id: 39,
     question: "The Efficient Market Hypothesis (EMH) suggests what?",
     options: [
-      "Markets are always irrational and easy to beat.",
       "Stock prices fully reflect all available information, making it difficult to consistently outperform the market.",
-      "Only large-cap stocks are priced efficiently.",
-      "Technical analysis is the only way to find undervalued stocks."
+      "Markets are always irrational and easy to beat with the right strategy.",
+      "Only large-cap stocks are priced efficiently, while small-caps are not.",
+      "Technical analysis is the only valid way to find undervalued stocks."
     ],
     correctAnswer: "Stock prices fully reflect all available information, making it difficult to consistently outperform the market.",
     explanation: "EMH is the theoretical foundation for passive investing. It argues that since all information is already priced in, trying to find 'bargains' is futile, and the best strategy is to simply own the market through an index fund.",
@@ -520,9 +520,9 @@ export const quizData: Question[] = [
     id: 40,
     question: "The main appeal of a 'Total Stock Market Index Fund' over an S&P 500 fund is that it also includes:",
     options: [
-      "International stocks",
       "Mid-cap and small-cap stocks",
-      "Government bonds",
+      "International stocks",
+      "Government and corporate bonds",
       "Real estate investment trusts (REITs)"
     ],
     correctAnswer: "Mid-cap and small-cap stocks",
@@ -533,10 +533,10 @@ export const quizData: Question[] = [
     id: 41,
     question: "A key metric for a Dividend Growth investor is a company's:",
     options: [
-      "Recent IPO date",
-      "Highest all-time stock price",
       "History of consistently increasing its dividend payout.",
-      "Level of social media hype."
+      "Recent inclusion in the S&P 500.",
+      "Highest all-time stock price.",
+      "Level of social media hype and discussion."
     ],
     correctAnswer: "History of consistently increasing its dividend payout.",
     explanation: "This strategy prioritizes reliable, growing income. A long track record of dividend increases (like a 'Dividend Aristocrat') is a strong sign of financial health and shareholder-friendly management.",
@@ -549,7 +549,7 @@ export const quizData: Question[] = [
       "Lump sum investing",
       "Market timing",
       "Dollar-cost averaging",
-      "Value investing"
+      "Yield chasing"
     ],
     correctAnswer: "Dollar-cost averaging",
     explanation: "Dollar-cost averaging is an unemotional, disciplined strategy. By investing a fixed amount on a regular schedule, you automatically buy more shares when prices are low and fewer when they are high.",
@@ -559,10 +559,10 @@ export const quizData: Question[] = [
     id: 43,
     question: "A 'factor tilt' towards 'value' in a portfolio means you are...",
     options: [
-      "Only buying stocks that have gone up recently.",
+      "Only buying stocks that have gone up in price recently.",
       "Overweighting your portfolio with stocks that are considered undervalued relative to their fundamentals.",
-      "Avoiding all technology stocks.",
-      "Investing only in companies with high dividend yields."
+      "Avoiding all technology and growth-oriented stocks.",
+      "Investing only in companies that pay high dividend yields."
     ],
     correctAnswer: "Overweighting your portfolio with stocks that are considered undervalued relative to their fundamentals.",
     explanation: "Factor tilting involves deviating from a market-cap weighted index to emphasize specific characteristics (factors) like 'value' or 'size' that have historically been associated with higher returns.",
@@ -572,9 +572,9 @@ export const quizData: Question[] = [
     id: 44,
     question: "Which of the following would be considered a 'thematic' investment?",
     options: [
+      "An ETF that invests only in cybersecurity companies",
       "A Total Stock Market Index Fund",
       "A U.S. Treasury Bond Fund",
-      "An ETF that invests only in cybersecurity companies",
       "A Large-Cap Value ETF"
     ],
     correctAnswer: "An ETF that invests only in cybersecurity companies",
@@ -585,10 +585,10 @@ export const quizData: Question[] = [
     id: 45,
     question: "What is 'correlation' in portfolio management?",
     options: [
-      "A measure of a stock's dividend yield.",
+      "A measure of a stock's dividend yield compared to its peers.",
       "How closely the returns of two assets move in relation to each other.",
-      "The annual fee of a mutual fund.",
-      "The speed at which a trade is executed."
+      "The annual management fee of a mutual fund.",
+      "The speed at which a trade is executed by a broker."
     ],
     correctAnswer: "How closely the returns of two assets move in relation to each other.",
     explanation: "Diversification works by combining assets with low or negative correlation. For example, stocks and bonds often have low correlation, so when one goes down, the other may go up, smoothing out portfolio returns.",
@@ -601,7 +601,7 @@ export const quizData: Question[] = [
       "Holding cash in a checking account.",
       "A long-term fixed-rate government bond.",
       "Treasury Inflation-Protected Securities (TIPS).",
-      "A certificate of deposit (CD) with a 1% interest rate."
+      "A high-yield corporate bond fund."
     ],
     correctAnswer: "Treasury Inflation-Protected Securities (TIPS).",
     explanation: "TIPS are a type of U.S. Treasury bond where the principal value adjusts with inflation. This feature specifically protects the investor's purchasing power, making them a direct hedge.",
@@ -611,10 +611,10 @@ export const quizData: Question[] = [
     id: 47,
     question: "What is 'rebalancing risk'?",
     options: [
-      "The risk of your portfolio drifting from its target allocation.",
-      "The risk that rebalancing forces you to sell high and buy low.",
+      "The risk that your portfolio's asset allocation drifts too far from its original target.",
       "The risk that transaction costs and taxes from rebalancing will slightly reduce returns.",
-      "The risk that your broker will not allow you to rebalance."
+      "The risk that rebalancing forces you to sell assets at a loss.",
+      "The risk that your broker will not allow you to rebalance your portfolio."
     ],
     correctAnswer: "The risk that transaction costs and taxes from rebalancing will slightly reduce returns.",
     explanation: "While rebalancing is crucial for risk management, the act of selling assets can incur transaction fees and, in taxable accounts, capital gains taxes. This is a minor 'cost' of the strategy.",
@@ -625,8 +625,8 @@ export const quizData: Question[] = [
     question: "An investor has a target of 60% stocks / 40% bonds. After a strong year for stocks, the portfolio is now 70/30. What does rebalancing entail?",
     options: [
       "Buying more stocks to continue the momentum.",
-      "Selling bonds to buy more stocks.",
       "Selling stocks to buy more bonds.",
+      "Selling all assets and moving to cash.",
       "Doing nothing and letting the winners run."
     ],
     correctAnswer: "Selling stocks to buy more bonds.",
@@ -637,10 +637,10 @@ export const quizData: Question[] = [
     id: 49,
     question: "What is 'rebalancing based on tolerance bands'?",
     options: [
-      "Rebalancing on a fixed schedule, like annually.",
-      "Rebalancing only when your risk tolerance changes.",
+      "Rebalancing on a fixed schedule, like annually or quarterly.",
+      "Rebalancing only when your personal risk tolerance changes.",
       "Rebalancing only when an asset class deviates from its target by a set percentage (e.g., 5%).",
-      "A strategy that avoids rebalancing altogether."
+      "A strategy that avoids rebalancing altogether to reduce taxes."
     ],
     correctAnswer: "Rebalancing only when an asset class deviates from its target by a set percentage (e.g., 5%).",
     explanation: "This is a more dynamic approach than calendar-based rebalancing. It avoids unnecessary trades but ensures the portfolio's risk profile doesn't drift too far from the intended target.",
@@ -650,8 +650,8 @@ export const quizData: Question[] = [
     id: 50,
     question: "A portfolio that is never rebalanced is likely to become:",
     options: [
-      "More conservative over time.",
-      "Perfectly aligned with its original target.",
+      "More conservative over time as bonds mature.",
+      "Perfectly aligned with its original target allocation.",
       "More concentrated and riskier than intended.",
       "More tax-efficient than a rebalanced portfolio."
     ],

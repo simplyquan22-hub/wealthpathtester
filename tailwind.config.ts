@@ -12,7 +12,6 @@ export default {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Nunito', 'sans-serif'],
-        code: ['monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',

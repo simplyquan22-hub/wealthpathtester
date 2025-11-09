@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Button } from './ui/button';
+import { LineChart } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
@@ -20,7 +22,12 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          {/* Future buttons can go here */}
+          <Button asChild variant="ghost">
+            <Link href="/dashboard">
+                <LineChart className="mr-2 h-4 w-4" />
+                My Progress
+            </Link>
+          </Button>
         </div>
       </div>
     </header>

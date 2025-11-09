@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useMemoFirebase } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { quizData, type Question } from '@/lib/quiz-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,10 +8,11 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy, AlertTriangle } from 'lucide-react';
+import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy, AlertTriangle, LineChart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Celebration from './celebration';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -46,30 +47,44 @@ export function Quiz() {
   
     const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
   
-    setTimeout(() => {
-      if (isCorrect) {
-        setScore(prev => prev + 1);
-      }
+    if (isCorrect) {
+      setScore(prev => prev + 1);
+    }
   
+    setTimeout(() => {
       setShowFeedback(false);
   
       if (currentQuestionIndex < quizData.length - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
       } else {
-        // This is the last question, tally the final score
-        const finalScore = quizData.reduce((acc, question, index) => {
-          // Use the just-submitted answer for the current (last) question
-          const finalAnswer = index === currentQuestionIndex ? selectedAnswer : selectedAnswers[index];
-          if (finalAnswer === question.correctAnswer) {
-            return acc + 1;
-          }
-          return acc;
-        }, 0);
-        setScore(finalScore);
         setIsFinished(true);
       }
     }, 1200); // Wait for feedback animation
   };
+
+  useEffect(() => {
+    if (isFinished) {
+      const finalScore = quizData.reduce((acc, question, index) => {
+        return selectedAnswers[index] === question.correctAnswer ? acc + 1 : acc;
+      }, 0);
+      
+      const newHistoryEntry = {
+        score: finalScore,
+        totalQuestions: quizData.length,
+        dateTaken: new Date().toISOString(),
+        id: new Date().getTime().toString()
+      };
+      
+      try {
+        const savedHistory = localStorage.getItem('quizHistory');
+        const history = savedHistory ? JSON.parse(savedHistory) : [];
+        history.push(newHistoryEntry);
+        localStorage.setItem('quizHistory', JSON.stringify(history));
+      } catch (error) {
+        console.error("Failed to save quiz history to localStorage", error);
+      }
+    }
+  }, [isFinished, selectedAnswers]);
 
   const handleReset = () => {
     setCurrentQuestionIndex(0);
@@ -183,6 +198,11 @@ export function Quiz() {
             <Button onClick={handleReset} size="lg" variant="outline">
               <RotateCw className="mr-2 h-4 w-4" /> Try Again
             </Button>
+            <Button asChild size="lg">
+              <Link href="/dashboard">
+                <LineChart className="mr-2 h-4 w-4" /> View My Progress
+              </Link>
+            </Button>
           </CardFooter>
         </Card>
     );
@@ -235,7 +255,7 @@ export function Quiz() {
       <CardFooter className="justify-between items-center p-6">
         <p className="text-sm text-muted-foreground">Question {currentQuestionIndex + 1} of {quizData.length}</p>
         <Button onClick={handleSubmit} disabled={!selectedAnswer || showFeedback} size="lg">
-          {showFeedback ? (isCurrentAnswerCorrect ? 'Correct!' : 'Incorrect') : (currentQuestionIndex === quizData.length - 1 ? 'Finish Quiz' : 'Submit Answer')}
+          {showFeedback ? (isCurrentAnswerCorrect ? 'Correct!' : 'Incorrect') : (currentQuestionIndex === quizData.length - 1 ? 'Finish Quiz' : 'Next Question')}
         </Button>
       </CardFooter>
     </Card>

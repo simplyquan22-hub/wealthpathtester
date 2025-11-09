@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
@@ -12,37 +10,47 @@ import { Badge } from '@/components/ui/badge';
 import { format, parseISO } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+
+interface QuizHistoryEntry {
+  score: number;
+  totalQuestions: number;
+  dateTaken: string;
+  id: string;
+}
 
 export default function DashboardPage() {
-  const { user, isUserLoading, firestore } = useFirebase();
+  const [quizHistory, setQuizHistory] = useState<QuizHistoryEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const quizHistoryQuery = useMemoFirebase(() => {
-    if (!user || !firestore) return null;
-    return query(collection(firestore, `users/${user.uid}/quizHistory`), orderBy('dateTaken', 'asc'));
-  }, [user, firestore]);
-
-  const { data: quizHistory, isLoading: isHistoryLoading } = useCollection<{
-    score: number;
-    totalQuestions: number;
-    dateTaken: string;
-  }>(quizHistoryQuery);
-
   useEffect(() => {
-    if (!isUserLoading && !user) {
-      router.push('/login?redirect=/dashboard');
+    // localStorage is a client-side only feature
+    try {
+      const savedHistory = localStorage.getItem('quizHistory');
+      if (savedHistory) {
+        setQuizHistory(JSON.parse(savedHistory));
+      }
+    } catch (error) {
+      console.error("Could not parse quiz history from localStorage", error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [user, isUserLoading, router]);
+  }, []);
 
   const chartData = useMemo(() => {
     if (!quizHistory) return [];
-    return quizHistory.map(entry => ({
+    // Sort by date to ensure the chart is chronological
+    const sortedHistory = [...quizHistory].sort((a, b) => new Date(a.dateTaken).getTime() - new Date(b.dateTaken).getTime());
+    return sortedHistory.map(entry => ({
       date: format(parseISO(entry.dateTaken), 'MMM d'),
       score: (entry.score / entry.totalQuestions) * 100,
     }));
   }, [quizHistory]);
 
-  if (isUserLoading || isHistoryLoading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto py-8 px-4 md:px-8">
         <div className="space-y-6">
@@ -54,106 +62,113 @@ export default function DashboardPage() {
     );
   }
 
-  if (!user) {
-    return null; // or a message telling them they are being redirected
-  }
-
   return (
     <div className="container mx-auto py-8 px-4 md:px-8">
-      <h1 className="text-3xl font-bold mb-6">Welcome, {user.displayName || 'Learner'}!</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Your Progress</h1>
+        <Button asChild variant="outline">
+           <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Quiz</Link>
+        </Button>
+      </div>
 
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Quiz Score Over Time</CardTitle>
-          <CardDescription>Track your progress across all your quiz attempts.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {chartData.length > 1 ? (
-            <div className="h-[350px]">
-              <ChartContainer config={{}} className="w-full h-full">
-                <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--muted-foreground) / 0.2)" />
-                  <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
-                  <YAxis unit="%" tickLine={false} axisLine={false} tickMargin={8} />
-                  <ChartTooltip
-                    cursor={false}
-                    content={<ChartTooltipContent
-                        formatter={(value) => `${Math.round(Number(value))}%`}
-                        indicator="line"
-                      />}
-                  />
-                  <defs>
-                    <linearGradient id="fillScore" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
-                    </linearGradient>
-                  </defs>
-                  <Area
-                    type="monotone"
-                    dataKey="score"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#fillScore)"
-                  />
-                </AreaChart>
-              </ChartContainer>
-            </div>
-          ) : (
-            <div className="h-[350px] flex items-center justify-center text-center text-muted-foreground">
-              <p>Complete at least two quizzes to see your progress chart.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Quiz History</CardTitle>
-          <CardDescription>A detailed log of all your past attempts.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Score</TableHead>
-                <TableHead className="text-right">Percentage</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {quizHistory && quizHistory.length > 0 ? (
-                [...quizHistory].reverse().map(entry => (
-                  <TableRow key={entry.id}>
-                    <TableCell>{format(parseISO(entry.dateTaken), 'MMMM d, yyyy')}</TableCell>
-                    <TableCell>{entry.score} / {entry.totalQuestions}</TableCell>
-                    <TableCell className="text-right">
-                       <Badge
-                        className={cn(
-                          (entry.score / entry.totalQuestions) * 100 >= 80
-                            ? 'bg-green-500/20 text-green-400 border-green-500/50'
-                            : (entry.score / entry.totalQuestions) * 100 >= 50
-                            ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50'
-                            : 'bg-red-500/20 text-red-400 border-red-500/50'
-                        )}
-                        variant="outline"
-                      >
-                        {Math.round((entry.score / entry.totalQuestions) * 100)}%
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))
+
+      {quizHistory.length === 0 ? (
+        <Card>
+          <CardContent className="h-[500px] flex flex-col items-center justify-center text-center">
+            <h2 className="text-2xl font-semibold">No Quizzes Taken Yet</h2>
+            <p className="mt-2 text-muted-foreground">
+              Complete a quiz to start tracking your progress!
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle>Quiz Score Over Time</CardTitle>
+              <CardDescription>Track your progress across all your quiz attempts.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartData.length > 1 ? (
+                <div className="h-[350px]">
+                  <ChartContainer config={{}} className="w-full h-full">
+                    <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                      <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--muted-foreground) / 0.2)" />
+                      <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
+                      <YAxis unit="%" tickLine={false} axisLine={false} tickMargin={8} />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent
+                            formatter={(value) => `${Math.round(Number(value))}%`}
+                            indicator="line"
+                          />}
+                      />
+                      <defs>
+                        <linearGradient id="fillScore" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
+                        </linearGradient>
+                      </defs>
+                      <Area
+                        type="monotone"
+                        dataKey="score"
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#fillScore)"
+                      />
+                    </AreaChart>
+                  </ChartContainer>
+                </div>
               ) : (
-                <TableRow>
-                  <TableCell colSpan={3} className="h-24 text-center">
-                    You haven't completed any quizzes yet.
-                  </TableCell>
-                </TableRow>
+                <div className="h-[350px] flex items-center justify-center text-center text-muted-foreground">
+                  <p>Complete at least two quizzes to see your progress chart.</p>
+                </div>
               )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Quiz History</CardTitle>
+              <CardDescription>A detailed log of all your past attempts.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Score</TableHead>
+                    <TableHead className="text-right">Percentage</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[...quizHistory].reverse().map(entry => (
+                      <TableRow key={entry.id}>
+                        <TableCell>{format(parseISO(entry.dateTaken), 'MMMM d, yyyy')}</TableCell>
+                        <TableCell>{entry.score} / {entry.totalQuestions}</TableCell>
+                        <TableCell className="text-right">
+                           <Badge
+                            className={cn(
+                              (entry.score / entry.totalQuestions) * 100 >= 80
+                                ? 'border-transparent bg-green-500/20 text-green-400'
+                                : (entry.score / entry.totalQuestions) * 100 >= 50
+                                ? 'border-transparent bg-yellow-500/20 text-yellow-400'
+                                : 'border-transparent bg-red-500/20 text-red-400'
+                            )}
+                            variant="outline"
+                          >
+                            {Math.round((entry.score / entry.totalQuestions) * 100)}%
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </>
+      )}
     </div>
   );
 }

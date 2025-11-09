@@ -8,12 +8,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy, Sparkles, BrainCircuit } from 'lucide-react';
+import { CheckCircle2, XCircle, Lightbulb, RotateCw, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Celebration from './celebration';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { explainAnswer } from '@/ai/flows/explain-answer-flow';
-import type { ExplainAnswerInput } from '@/ai/flows/explain-answer-types';
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -39,49 +37,6 @@ const getInitialState = <T,>(key: string, defaultValue: T): T => {
     return defaultValue;
   }
 };
-
-const AIExplanation = ({ question, userAnswer }: { question: Question, userAnswer: string }) => {
-  const [explanation, setExplanation] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleExplain = async () => {
-    setIsLoading(true);
-    setExplanation('');
-
-    const input: ExplainAnswerInput = {
-      question: question.question,
-      options: question.options,
-      userAnswer: userAnswer || "Not answered",
-      correctAnswer: question.correctAnswer,
-      originalExplanation: question.explanation,
-    };
-
-    try {
-      const result = await explainAnswer(input);
-      setExplanation(result.explanation);
-    } catch (e) {
-      console.error(e);
-      setExplanation("Sorry, I wasn't able to generate an explanation at this time.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="mt-4">
-      <Button onClick={handleExplain} disabled={isLoading} variant="outline" size="sm">
-        {isLoading ? <Sparkles className="mr-2 h-4 w-4 animate-spin" /> : <BrainCircuit className="mr-2 h-4 w-4" />}
-        {isLoading ? 'Thinking...' : 'Ask AI for a Better Explanation'}
-      </Button>
-      {explanation && (
-        <div className="mt-4 p-4 bg-muted/50 rounded-lg border">
-          <p className="text-muted-foreground">{explanation}</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
 
 export function Quiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
@@ -138,20 +93,19 @@ export function Quiz() {
   const handleSubmit = () => {
     if (!selectedAnswer) return;
 
-    setShowFeedback(true);
-
     const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
     if (isCorrect) {
       setScore(prev => prev + 1);
     }
+    setShowFeedback(true);
 
     setTimeout(() => {
+      setShowFeedback(false);
       if (currentQuestionIndex < quizData.length - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
       } else {
         setIsFinished(true);
       }
-      setShowFeedback(false);
     }, 2000);
   }
 
@@ -204,39 +158,28 @@ export function Quiz() {
   if (isFinished) {
     const isGoodScore = scorePercentage >= 80;
     return (
-        <Card className="relative w-full max-w-4xl shadow-2xl">
-          <CardHeader className="text-center p-8">
-            <CardTitle className="text-3xl font-bold">Quiz Complete!</CardTitle>
+        <Card className="relative w-full max-w-4xl shadow-2xl overflow-hidden">
+          {isGoodScore && <Celebration />}
+          <CardHeader className="text-center p-8 bg-card/80 backdrop-blur-sm z-10 relative">
+            {isGoodScore ? (
+              <Trophy className="mx-auto h-16 w-16 text-primary animate-in zoom-in-50" />
+            ) : (
+              <RotateCw className="mx-auto h-16 w-16 text-muted-foreground animate-in zoom-in-50" />
+            )}
+            <CardTitle className="text-3xl font-bold mt-4">{isGoodScore ? "Excellent Work!" : "Keep Learning!"}</CardTitle>
             <CardDescription className="text-lg">You scored {score} out of {quizData.length}</CardDescription>
             <div className="relative pt-4">
-              <Progress value={scorePercentage} className="h-4" />
+              <Progress value={scorePercentage} className={cn("h-4", isGoodScore ? "bg-primary/30" : "bg-destructive/30")} />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-primary-foreground text-sm">{Math.round(scorePercentage)}%</div>
             </div>
+             <p className="text-muted-foreground mt-4">
+              {isGoodScore 
+                ? "You have a strong understanding of these financial concepts. Apply your knowledge and build your wealth!"
+                : "Building financial literacy is a journey. Review your answers and try again!"
+              }
+            </p>
           </CardHeader>
           <CardContent className="p-6">
-            <div className="my-6">
-              {isGoodScore ? (
-                <Alert className="border-accent bg-accent/30 text-accent-foreground">
-                  <Trophy className="h-5 w-5 text-primary" />
-                  <AlertTitle className="font-bold text-lg">
-                    Excellent work!
-                  </AlertTitle>
-                  <AlertDescription>
-                    You have a strong understanding of these financial concepts. Now it's time to go apply your knowledge and build your wealth!
-                  </AlertDescription>
-                </Alert>
-              ) : (
-                <Alert variant="destructive">
-                  <RotateCw className="h-5 w-5" />
-                  <AlertTitle className="font-bold text-lg">
-                    Keep learning!
-                  </AlertTitle>
-                  <AlertDescription>
-                    Don't worry, building financial literacy is a journey. We recommend you retake the quiz or go back to the WealthPath courses to review the material.
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
             <h3 className="text-xl font-semibold mb-4 text-center">Review Your Answers</h3>
             <Accordion type="multiple" className="w-full">
               {sectionNames.map(sectionName => (
@@ -246,7 +189,7 @@ export function Quiz() {
                   </AccordionTrigger>
                   <AccordionContent className="p-2">
                     <Accordion type="single" collapsible className="w-full">
-                      {sections[sectionName].map((question, index) => {
+                      {sections[sectionName].map((question) => {
                          const questionGlobalIndex = quizData.findIndex(q => q.id === question.id);
                          const userAnswer = selectedAnswers[questionGlobalIndex];
                          const isCorrect = userAnswer === question.correctAnswer;
@@ -265,7 +208,6 @@ export function Quiz() {
                                 <Lightbulb className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
                                 <p className="text-muted-foreground">{question.explanation}</p>
                               </div>
-                               <AIExplanation question={question} userAnswer={userAnswer} />
                             </AccordionContent>
                           </AccordionItem>
                         );
@@ -276,7 +218,7 @@ export function Quiz() {
               ))}
             </Accordion>
           </CardContent>
-          <CardFooter className="justify-center p-6">
+          <CardFooter className="justify-center p-6 border-t">
             <Button onClick={handleReset} size="lg">
               <RotateCw className="mr-2 h-4 w-4" /> Try Again
             </Button>

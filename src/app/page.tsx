@@ -9,8 +9,9 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 md:p-8 space-y-8">
        <div className="text-center">
          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-wider text-foreground font-heading">
-          WEALTHPATH’S KNOWLEDGE TESTER
+          WealthPath’s Exam
         </h1>
+        <p className="text-muted-foreground text-lg mt-2">Test your Knowledge</p>
        </div>
       <Quiz />
       <Card className="w-full max-w-2xl shadow-lg">

@@ -150,11 +150,11 @@ export default function DashboardPage() {
                         <TableCell className="text-right">
                            <Badge
                             className={cn(
-                              (entry.score / entry.totalQuestions) * 100 >= 80
-                                ? 'border-transparent bg-green-500/20 text-green-400'
-                                : (entry.score / entry.totalQuestions) * 100 >= 50
-                                ? 'border-transparent bg-yellow-500/20 text-yellow-400'
-                                : 'border-transparent bg-red-500/20 text-red-400'
+                              {
+                                'border-transparent bg-green-500/20 text-green-700 dark:text-green-400': (entry.score / entry.totalQuestions) * 100 >= 80,
+                                'border-transparent bg-yellow-500/20 text-yellow-700 dark:text-yellow-400': (entry.score / entry.totalQuestions) * 100 >= 50 && (entry.score / entry.totalQuestions) * 100 < 80,
+                                'border-transparent bg-red-500/20 text-red-700 dark:text-red-400': (entry.score / entry.totalQuestions) * 100 < 50
+                              }
                             )}
                             variant="outline"
                           >

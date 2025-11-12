@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
-import { Inter, Nunito } from 'next/font/google';
+import { Inter, Montserrat } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import Header from '@/components/header';
 import { FirebaseClientProvider } from '@/firebase';
@@ -9,12 +9,13 @@ import { FirebaseClientProvider } from '@/firebase';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  weight: ['400', '600', '800'],
 });
 
-const nunito = Nunito({
+const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: ['700', '900'],
-  variable: '--font-nunito',
+  weight: ['700'],
+  variable: '--font-montserrat',
 })
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default function RootLayout({
       <body className={cn(
         "font-body antialiased flex flex-col min-h-screen",
         inter.variable,
-        nunito.variable
+        montserrat.variable
       )}>
         <FirebaseClientProvider>
           <Header />

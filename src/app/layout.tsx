@@ -46,7 +46,7 @@ export default function RootLayout({
               <p className="font-bold text-lg text-foreground">WealthPath</p>
               <p className="italic mb-4 text-sm">“A Journey Uniquely Yours”</p>
               <p className="text-sm">
-                Contact Us: <a href="mailto:Raequancol12@gmail.com" className="text-primary hover:underline">Raequancol12@gmail.com</a>
+                Contact Us: <a href="mailto:info@mywealthpath.org" className="text-primary hover:underline">info@mywealthpath.org</a>
               </p>
               <p className="text-xs mt-4">
                 Copyright © 2026 WealthPath. All rights reserved.

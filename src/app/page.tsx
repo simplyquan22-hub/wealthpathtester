@@ -29,8 +29,7 @@ export default function Home() {
             </p>
             <Link href="https://docs.google.com/document/d/1-xCGlcx5ap2YinQ21jWvljQ8uWdof6NqCzATqJzfcJ4/edit?usp=drivesdk" target="_blank" className="inline-block">
               <button className="btn">
-                <span className="flex items-center justify-center">
-                  <BookOpen className="mr-2 h-4 w-4" />
+                <span>
                   Get started
                 </span>
               </button>

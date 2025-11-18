@@ -106,6 +106,7 @@ export function Quiz() {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
   const { firestore, user } = useFirebase();
 
   const currentQuestion = useMemo(() => quizData[currentQuestionIndex], [currentQuestionIndex]);
@@ -147,9 +148,21 @@ export function Quiz() {
     setSelectedAnswers({ ...selectedAnswers, [currentQuestionIndex]: answer });
   };
   
+  const isCurrentAnswerCorrect = selectedAnswer === currentQuestion.correctAnswer;
+
   const handleSubmit = () => {
     if (!selectedAnswer) return;
     setShowFeedback(true);
+
+    if (navigator.vibrate) {
+        if (isCurrentAnswerCorrect) {
+            navigator.vibrate(100); // Short buzz for correct
+        } else {
+            navigator.vibrate([100, 50, 100]); // "Incorrect" double buzz
+            setIsShaking(true);
+            setTimeout(() => setIsShaking(false), 820); // Duration of the shake animation
+        }
+    }
     
     setTimeout(() => {
       if (currentQuestionIndex < quizData.length - 1) {
@@ -193,7 +206,6 @@ export function Quiz() {
   
   const scorePercentage = (finalScore / quizData.length) * 100;
   const quizProgress = ((isFinished ? quizData.length : currentQuestionIndex) / quizData.length) * 100;
-  const isCurrentAnswerCorrect = showFeedback && selectedAnswer === currentQuestion.correctAnswer;
   const isGoodScore = scorePercentage >= 80;
 
   if (isFinished) {
@@ -222,11 +234,9 @@ export function Quiz() {
               <Alert variant="destructive" className="mb-6 bg-yellow-500/10 border-yellow-500/50 text-yellow-200">
                 <AlertTriangle className="h-4 w-4 !text-yellow-500" />
                 <AlertTitle className="font-semibold !text-yellow-400">Focus Area</AlertTitle>
-                {weakestSection && (
-                    <AlertDescription>
+                <AlertDescription>
                     You seem to be struggling with the **{weakestSection}** section. We recommend reviewing this topic to strengthen your understanding.
-                    </AlertDescription>
-                )}
+                </AlertDescription>
               </Alert>
             )}
             <h3 className="text-xl font-semibold mb-4 text-center">Review Your Answers</h3>
@@ -279,8 +289,8 @@ export function Quiz() {
   }
 
   return (
-    <Card className="w-full max-w-2xl shadow-2xl relative overflow-hidden">
-      {isCurrentAnswerCorrect && <Celebration />}
+    <Card className={cn("w-full max-w-2xl shadow-2xl relative overflow-hidden", isShaking && "animate-shake")}>
+      {showFeedback && isCurrentAnswerCorrect && <Celebration />}
       <CardHeader className="p-6 border-b">
         <Progress value={quizProgress} className="mb-4 h-2"/>
         <CardDescription className="font-semibold text-primary">

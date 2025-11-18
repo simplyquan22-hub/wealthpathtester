@@ -112,10 +112,11 @@ export function Quiz() {
   const selectedAnswer = selectedAnswers[currentQuestionIndex];
 
   const finalScore = useMemo(() => {
+    if (!isFinished) return 0;
     return quizData.reduce((acc, question, index) => {
       return selectedAnswers[index] === question.correctAnswer ? acc + 1 : acc;
     }, 0);
-  }, [selectedAnswers]);
+  }, [selectedAnswers, isFinished]);
 
   const weakestSection = useMemo(() => {
     if (!isFinished) return null;
@@ -152,9 +153,8 @@ export function Quiz() {
     setShowFeedback(true);
     
     setTimeout(() => {
-      setShowFeedback(false);
-  
       if (currentQuestionIndex < quizData.length - 1) {
+        setShowFeedback(false);
         setCurrentQuestionIndex(prev => prev + 1);
       } else {
         setIsFinished(true);
@@ -190,7 +190,7 @@ export function Quiz() {
     setShowFeedback(false);
   };
   
-  const scorePercentage = (finalScore / quizData.length) * 100;
+  const scorePercentage = isFinished ? (finalScore / quizData.length) * 100 : 0;
   const quizProgress = ((isFinished ? quizData.length : currentQuestionIndex) / quizData.length) * 100;
   const isCurrentAnswerCorrect = showFeedback && selectedAnswer === currentQuestion.correctAnswer;
 
@@ -292,7 +292,7 @@ export function Quiz() {
       </CardHeader>
      
       <CardContent className="p-6">
-        <div className="space-y-3">
+        <div className="space-y-4">
           {currentQuestion.options.map((option, index) => {
             const isSelected = selectedAnswer === option;
             const isCorrect = currentQuestion.correctAnswer === option;
@@ -317,7 +317,7 @@ export function Quiz() {
                   readOnly
                   disabled={showFeedback}
                 />
-                <span className="checkmark"></span>
+                <div className="checkmark"></div>
                 {option}
               </label>
             );

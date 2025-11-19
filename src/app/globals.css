@@ -107,10 +107,6 @@ body {
   transition-duration: 0.3s;
 }
 
-.quiz-option-container:hover .checkmark {
-  background: hsl(var(--muted-foreground)/0.5);
-}
-
 .quiz-option-container input:checked ~ .checkmark {
   box-shadow: inset 3px 3px 5px hsl(var(--muted-foreground)/0.2),
               inset -3px -3px 5px hsl(var(--card));

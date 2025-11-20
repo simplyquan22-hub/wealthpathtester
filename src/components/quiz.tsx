@@ -14,7 +14,6 @@ import Link from 'next/link';
 import { explainAnswer, type ExplainAnswerInput } from '@/ai/flows/explain-answer-flow';
 import { useFirebase } from '@/firebase';
 import { addDoc, collection } from 'firebase/firestore';
-import { playCorrectSound, playIncorrectSound } from '@/lib/audio';
 
 // Group questions by section
 const sections = quizData.reduce((acc, question) => {
@@ -157,10 +156,8 @@ export function Quiz() {
 
     if (isCurrentAnswerCorrect) {
         if (navigator.vibrate) navigator.vibrate(100); // Short buzz for correct
-        playCorrectSound();
     } else {
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]); // "Incorrect" double buzz
-        playIncorrectSound();
         setIsShaking(true);
         setTimeout(() => setIsShaking(false), 820); // Duration of the shake animation
     }
